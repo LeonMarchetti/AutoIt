@@ -1,0 +1,6 @@
+﻿# Ignorar ejecutables:
+*.exe
+
+# Ignorar diagramas Dia:
+*.dia
+*.dia~
