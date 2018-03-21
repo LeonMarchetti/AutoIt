@@ -1,6 +1,15 @@
 ﻿# Ignorar ejecutables:
 *.exe
 
-# Ignorar diagramas Dia:
+# Archivos de configuración:
+AutoItWidget.ini
+
+# Diagramas Dia:
 *.dia
 *.dia~
+
+# Imágenes:
+Image_Resizer.bmp
+
+# Scripts:
+StringSize.au3

@@ -9,7 +9,6 @@ Opt('ExpandVarStrings', 1)
 ;#include '_Fann.au3'
 #include 'Funciones.au3'
 #include 'MyDebug.au3'
-#include 'GUIRun.au3'
 #include <AutoItConstants.au3>
 #include <ButtonConstants.au3>
 #include <ColorConstants.au3>
@@ -92,7 +91,7 @@ EndFunc
 Func _Test_Arrays()
     Local $arr[0][2]
     For $i = 0 To 4
-        DebugLog('$i = ' & $i)
+        ;DebugLog('$i = ' & $i)
         Local $subArr = [[ $i, $i ]]
         Assert(IsArray($subArr), '$subArr no es arreglo')
         _ArrayAdd($arr, $subArr)
@@ -101,6 +100,33 @@ Func _Test_Arrays()
     Assert(UBound($arr) == 5, 'Número incorrecto de elementos en $arr: ' & UBound($arr))
     For $i = 0 To 4
         PrintLn('$arr[$i] = [' & $arr[$i][0] & ', ' & $arr[$i][1] & ']')
+    Next
+EndFunc
+Func _Test_ArrayInsert()
+    Local $arr_base[10]
+    For $i = 0 To 9
+        $n = Random(1, 5, 1)
+
+        Local $sub_arr[$n]
+        ;Assert(Not $sub_arr[0], 'Subarreglo no vacío')
+
+        For $j = 0 To $n - 1
+            $m = Random(0, 99, 1)
+
+            $sub_arr[$j] = $m
+            Assert($sub_arr[$j] = $m, 'Elemento no insertado en subarreglo: <' & $sub_arr[$j] & '>')
+        Next
+
+        $arr_base[$i] = $sub_arr
+        Assert(IsArray($arr_base[$i]), 'Elemento de arreglo principal no es un arreglo')
+    Next
+
+    For $a = 0 To UBound($arr_base) - 1
+        $sub_arr = $arr_base[$a]
+        Assert(IsArray($sub_arr), 'Subrreglo $i$ no es un arreglo')
+        $n = UBound($sub_arr)
+        $str = _ArrayToString($sub_arr, ',', 0, $n-1)
+        PrintLn('$a$|$n$|[$str$]')
     Next
 EndFunc
 Func _Test_Assert()
@@ -512,6 +538,10 @@ Func _Test_Timer()
     PrintLn("Resultado: " & $aResult[0])
     PrintLn("Tiempo:    " & $aResult[1] & " ms.")
 EndFunc
+Func _Test_UBound()
+    Local $arreglo[0]
+    PrintLn('UBound = ' & UBound($arreglo))
+EndFunc
 Func _Test_WinActive()
     PrintLn("_Test_WinActive()")
     Opt("WinTitleMatchMode", 2)
@@ -540,4 +570,4 @@ Func _Test_Zero()
 EndFunc
 
 ; Ejecución
-_Test_IniReadSection()
+_Test_UBound()

@@ -5,7 +5,7 @@
 Opt('GUIOnEventMode', 1)
 #EndRegion
 
-Global Const $MODULO = 6
+Global Const $MODULO = 7
 
 Switch ($MODULO)
 Case 1 ; Radios
@@ -176,6 +176,41 @@ Case 6 ; Botones
         Assert(GUICtrlSetOnEvent($boton, _botonClicked) == 1, _
                'GUICtrlSetOnEvent falló.')
     Next
+Case 7 ; Tabs
+
+    #Region Tab Constants
+    $TAB_HEIGHT = 145
+    $TAB_LEFT = 0
+    $TAB_STYLE = BitOr(0x0008, 0x0100, 0x8000)
+    $TAB_TOP = 0
+    $TAB_WIDTH = 209
+    #EndRegion
+    #Region GUI constants:
+    $GUI_FONT_ATTR   = 0
+    $GUI_FONT_NAME   = 'Liberation Mono'
+    $GUI_FONT_SIZE   = 10
+    $GUI_FONT_WEIGHT = 0
+    $GUI_HEIGHT      = $TAB_HEIGHT -1 + 20
+    $GUI_TITLE       = 'Tabs'
+    $GUI_WIDTH       = $TAB_WIDTH - 2
+    #EndRegion
+
+    GUICreate($GUI_TITLE, $GUI_WIDTH, $GUI_HEIGHT)
+    GUISetFont($GUI_FONT_SIZE, $GUI_FONT_WEIGHT, $GUI_FONT_ATTR, $GUI_FONT_NAME)
+
+    ; Tabs:
+    $tab_control = GUICtrlCreateTab($TAB_LEFT, $TAB_TOP, $TAB_WIDTH, $TAB_HEIGHT, $TAB_STYLE)
+    _TabItemControls('Orig')
+
+    $boton_agregar = GUICtrlCreateButton('Agregar', 0, 144, 69, 20)
+    $boton_cerrar = GUICtrlCreateButton('Cerrar', 69, 144, 69, 20)
+    GUICtrlSetColor(-1, 0xFFFFFF)
+    GUICtrlSetBkColor(-1, 0xFF0000)
+    GUICtrlCreateButton('Limpiar', 138, 144, 69, 20)
+
+    GUICtrlSetOnEvent($boton_agregar, _boton_agregarClicked)
+    GUICtrlSetOnEvent($boton_cerrar, _boton_cerrarClicked)
+
 EndSwitch
 
 #Region Ejecución
@@ -190,8 +225,62 @@ WEnd
 Func _botonClicked()
     PrintLn('Hola mundo: ' & @GUI_CtrlId)
 EndFunc
+Func _boton_agregarClicked()
+    _TabItemControls('Dup')
+EndFunc
+Func _boton_cerrarClicked()
+    GUICtrlDelete(GUICtrlRead($tab_control, 1))
+EndFunc
 Func _GUI_EVENT_CLOSE()
     GUIDelete()
     Exit
+EndFunc
+#EndRegion
+
+#Region Funciones
+Func _TabItemControls($titulo)
+
+    $tab_item = GUICtrlCreateTabItem($titulo)
+    GUICtrlSetImage($tab_item, 'au3.ico')
+
+    #Region Control Constants
+    $boton_alto = 10
+    $ancho = 45
+    $doble_ancho = 95
+    $alto = 20
+    $ES_INPUTFIJO = 0x0801
+    $ES_INPUTENTRADA = 0x2001
+    $screenProp = @DesktopWidth / @DesktopHeight
+    Local $X = [6, 56, 106, 156, 206]
+    Local $Y = [28, 53, 78, 103, 128]
+    #EndRegion
+
+    ; Fila 1
+    GUICtrlCreateInput(@DesktopWidth,         $X[0], $Y[0], $ancho, $alto, $ES_INPUTFIJO)
+    GUICtrlCreateInput(@DesktopHeight,        $X[1], $Y[0], $ancho, $alto, $ES_INPUTFIJO)
+    GUICtrlCreateInput(Round($screenProp, 5), $X[2], $Y[0], $doble_ancho, $alto, $ES_INPUTFIJO)
+
+    ; Fila 2
+    $input1 = GUICtrlCreateInput('', $X[0], $Y[1], $ancho, $alto, $ES_INPUTENTRADA)
+    $input2 = GUICtrlCreateInput('', $X[1], $Y[1], $ancho, $alto, $ES_INPUTENTRADA)
+    $input3 = GUICtrlCreateInput('', $X[2], $Y[1], $doble_ancho, $alto, $ES_INPUTFIJO)
+
+    ; Fila 3
+    $input4 = GUICtrlCreateInput('', $X[0], $Y[2], $ancho, $alto, $ES_INPUTENTRADA)
+    $input5 = GUICtrlCreateInput('', $X[1], $Y[2], $ancho, $alto, $ES_INPUTENTRADA)
+    $input6 = GUICtrlCreateInput('', $X[2], $Y[2], $ancho, $alto, $ES_INPUTFIJO)
+    $input7 = GUICtrlCreateInput('', $X[3], $Y[2], $ancho, $alto, $ES_INPUTFIJO)
+
+    ; Fila 4
+    $input8 = GUICtrlCreateInput('', $X[0], $Y[3], $ancho, $alto, $ES_INPUTFIJO)
+    $input9 = GUICtrlCreateInput('', $X[1], $Y[3], $ancho, $alto, $ES_INPUTFIJO)
+
+    ; Fila 5
+    $button1 = GUICtrlCreateButton('', $X[0], $Y[4], $ancho, $boton_alto)
+    GUICtrlSetBkColor(-1, 0x00FF00)
+    $button2 = GUICtrlCreateButton('', $X[1], $Y[4], $ancho, $boton_alto)
+    GUICtrlSetBkColor(-1, 0x00FF00)
+
+    GUICtrlCreateTabItem('')
 EndFunc
 #EndRegion
