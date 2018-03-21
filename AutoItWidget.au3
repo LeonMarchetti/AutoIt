@@ -1,5 +1,6 @@
 #Region Configuración
 HotKeySet('#{a}', _MostrarPaneles)
+HotKeySet('#+{a}', _Reiniciar)
 Opt('ExpandEnvStrings', 1)
 Opt('GUIOnEventMode', 1)
 Opt('TrayMenuMode', 1)
@@ -50,6 +51,14 @@ EndFunc
 #EndRegion
 
 #Region Funciones
+Func _Reiniciar()
+    For $hPanel In $ahPaneles
+        GUIDelete($hPanel)
+    Next
+    Dim $ahPaneles[0]
+    Dim $aBotones[0][2]
+    _CrearPaneles()
+EndFunc
 Func _CambiarPanel($hPanel, $eFlag)
     $iPaneles = UBound($ahPaneles)
     For $i = 0 To $iPaneles - 1
