@@ -1,7 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
-Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)
 #EndRegion
 
@@ -101,12 +100,6 @@ Func _CrearGUI()
         ['+{right}', $button5] _
     ]
     GUISetAccelerators($aAccelKeys)
-EndFunc
-ConsoleWrite('   $$x|   $$y|$$xImg|$$yImg|@LF@')
-ConsoleWrite('-----|-----|-----|-----|@LF@')
-Func _MostrarVariables($texto='')
-    ConsoleWrite(StringFormat('%5d|%5d|%5d|%5d', $x, $y, $xImg, $yImg) & _
-                 '| $texto$@LF@')
 EndFunc
 #EndRegion
 
