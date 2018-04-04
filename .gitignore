@@ -4,12 +4,9 @@
 # Archivos de configuración:
 AutoItWidget.ini
 
+# Carpetas:
+MVC/
+
 # Diagramas Dia:
 *.dia
 *.dia~
-
-# Imágenes:
-Image_Resizer.bmp
-
-# Scripts:
-StringSize.au3

@@ -138,6 +138,9 @@ Func _CrearPaneles()
                     GUICtrlSetImage($idBoton, $asStringSplit[2], 0, 1)
             EndSwitch
 
+            ; Agregar tooltip al botón:
+            GUICtrlSetTip($idBoton, $asStringSplit[1])
+
             Local $aBoton = [[ $idBoton, $asStringSplit[1] ]]
             _ArrayAdd($aBotones, $aBoton)
 

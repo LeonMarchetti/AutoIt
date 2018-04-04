@@ -201,6 +201,23 @@ Func _Test_DirRemove()
         MostrarCartel($TITULO, "No se pudo borrar la carpeta.")
     EndIf
 EndFunc
+Func _Test_DllStruct()
+    Local Const $struct = 'struct;int x; int y;int xImg;int yImg;endstruct'
+    Local $o = DllStructCreate($struct)
+    DllStructSetData($o, 'x', 1)
+    DllStructSetData($o, 'y', 2)
+    DllStructSetData($o, 'xImg', 3)
+    DllStructSetData($o, 'yImg', 4)
+
+    For $i = 1 To 4
+        ConsoleWrite('$$o[$i$] = ' & DllStructGetData($o, $i) & @LF)
+    Next
+
+    ; ConsoleWrite('x = ' & DllStructGetData($o, 'x') & @LF)
+    ; ConsoleWrite('y = ' & DllStructGetData($o, 'y') & @LF)
+    ; ConsoleWrite('xImg = ' & DllStructGetData($o, 'xImg') & @LF)
+    ; ConsoleWrite('yImg = ' & DllStructGetData($o, 'yImg') & @LF)
+EndFunc
 Func _Test_EnvVars()
     #include <Constants.au3>
 
@@ -211,6 +228,18 @@ Func _Test_EnvVars()
         If @error Then ExitLoop
     Wend
     ConsoleWrite($Line)
+EndFunc
+Func _Test_Equals()
+    If ('') Then
+        ConsoleWrite('String vacío es True@LF@')
+    Else
+        ConsoleWrite('String vacío es False@LF@')
+    EndIf
+    If (0) Then
+        ConsoleWrite('Cero es True@LF@')
+    Else
+        ConsoleWrite('Cero es False@LF@')
+    EndIf
 EndFunc
 Func _Test_Exit()
     Exit
@@ -369,6 +398,15 @@ Func _Test_Input_idInputChanged()
     PrintLn("_idInputChanged " & $i)
     $i+=1
 EndFunc
+Func _Test_IsType()
+    GUICreate($TITULO)
+    $idInput = GUICtrlCreateInput('', 0, 0, 100, 20)
+    If (IsInt($idInput)) Then
+        ConsoleWrite('$$idInput es Integer@LF@')
+    Else
+        ConsoleWrite('No sé@LF@')
+    EndIf
+EndFunc
 Func _Test_LeerLineasArchivo()
     $hGUI = GUICreate("AutoIt")
     $asListaApps = LeerLineasArchivo("Apps.txt")
@@ -432,9 +470,33 @@ Func _Test_Null()
     EndIf
 EndFunc
 Func _Test_ObjCreate()
-    $oOpera = ObjCreate("Opera.application.1")
-    $oOpera.url = "http://www.google.com"
-    PrintLn($TITULO)
+    ; $oOpera = ObjCreate("Opera.application.1")
+    ; $oOpera.url = "http://www.google.com"
+    ; PrintLn($TITULO)
+
+    ; $cache = ObjCreate('Scripting.Dictionary')
+    ; Local Const $alfa = [15, 10, 5, 5]
+    ; Local Const $gamma = [45, 30, 15, 15]
+    ; $clave = 'alfa'
+
+    ; $cache($clave) = $alfa
+    ; $cache($clave) = $gamma
+    ; $beta = $cache($clave)
+    ; PrintLn(_ArrayToString($beta))
+
+    $cache = ObjCreate('Scripting.Dictionary')
+    Local $alfa = [1, 2, 3, 4, 5]
+    Local $beta = [6, 7, 8, 9, 10]
+    Local $gamma = [11, 12, 13, 14, 15]
+    $cache('alfa') = $alfa
+    $cache('beta') = $beta
+    $cache('gamma') = $gamma
+    For $k In $cache
+        $v = $cache($k)
+        $str = _ArrayToString($v)
+        PrintLn('$k$: "$str$"')
+    Next
+
 EndFunc
 Func _Test_PackVariables()
     $var1 = "Hola"
@@ -458,19 +520,35 @@ Func _Test_PrintLn()
     $str1 = 'Hola'
     $str2 = 'Mundo'
     PrintLn('$str1$ $str2$')
+    PrintLn(_StringRepeat('=', 80))
 EndFunc
 Func _Test_Run()
-    #cs $iPID = Run("ls", "C:\Users\LeoAM\Baul", @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
+    $iPID = Run('git status', 'C:\Users\LeoAM\Baul\AutoIt', @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
     ProcessWaitClose($iPid)
-    $sOutput = StdoutRead($iPID)
+    $salida = StdoutRead($iPID)
     If (@error) Then
-        PrintLn("Error")
+        ConsoleWrite('Error@LF@')
     Else
-        PrintLn($sOutput)
+        ConsoleWrite($salida)
+        ConsoleWrite('================================@LF@')
+        $regex = '(?m)^\t(?:modified:   )?(.+)$'
+        $match = StringRegExp($salida, $regex)
+        If (@error) Then
+            ConsoleWrite('Patrón mal escrito@LF@')
+        Else
+            If ($match) Then
+                $matches = StringRegExp($salida, $regex, 3)
+                For $match In $matches
+                    ConsoleWrite('* $match$@LF@')
+                Next
+            Else
+                ConsoleWrite('No coincide@LF@')
+            EndIf
+        EndIf
     EndIf
-    #ce
+
     ;Run('cmd', '%baul%\github\Taller-sockets\tcp')
-    Run('cmd', '')
+    ;Run('cmd', '')
 EndFunc
 Func _Test_ScriptLineNumber($n=@ScriptLineNumber)
     PrintLn("Linea: " & $n)
@@ -485,7 +563,8 @@ Func _Test_ShellExecute()
     ; $sOutput = StdoutRead($iPID)
     ; PrintLn($sOutput)
 
-    ShellExecute('C:\Users\LeoAM')
+    ; ShellExecute('C:\Users\LeoAM')
+    Run('..\AutoHotkey\Untitled_args.ahk "cmd \k py"')
 EndFunc
 Func _Test_StringRegExp()
     Local $sFile = 'Garbage.c Match.c'
@@ -570,4 +649,4 @@ Func _Test_Zero()
 EndFunc
 
 ; Ejecución
-_Test_UBound()
+_Test_PrintLn()

@@ -1,218 +1,270 @@
 #Region Configuración
-#pragma compile(Icon, au3.ico)
+#pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
-Opt("GUIOnEventMode", 1)
+Opt('GUIOnEventMode', 1)
+#EndRegion
+
+#Region Includes
+#include <GUIComboBox.au3>
 #EndRegion
 
 #Region Variables globales
-Global $x = 0
-Global $y = 0               ; Ancho y alto actuales de la imágen a modificar.
+Global $x, $y               ; Ancho y alto actuales de la imágen a modificar.
 Global $xImg, $yImg         ; Ancho y alto de la imágen a agregar.
 Global $newProp1, $newProp2 ; Proporciones luego de agregar la imágen nueva.
 
 ; Proporción de la pantalla, se usa como proporción de referencia para la imágen
 Global Const $screenProp = @DesktopWidth / @DesktopHeight
 
-; Estilos de inputs:
-Global Const $ES_INPUTFIJO    = 0x0801 ; = BitOr($ES_CENTER, $ES_READONLY)
-Global Const $ES_INPUTENTRADA = 0x2001 ; = BitOr($ES_CENTER, $ES_NUMBER)
-
 ; Colores:
 Global Const $COLOR_GRIS  = 0xF0F0F0
 Global Const $COLOR_ROJO  = 0xF28773
 Global Const $COLOR_VERDE = 0x00FF00
+
+; Controles:
+Global $input1, $input2, $input3, $input4, $input5, $input6, $input7, _
+       $input8, $input9, $button1, $button2, $button3, $button4, $button5, _
+       $combo
+
+; Combo:
+Global $actual = 'Original'
+
+; Objeto diccionario para guardar los valores para cada imágen:
+Global $cache = ObjCreate('Scripting.Dictionary')
 #EndRegion
 
-#Region Interfaz gráfica
-GUICreate('Imágenes', 323, 131)
-GUISetFont(10, Default, Default, 'Liberation Mono')
+#Region Funciones
+Func _CrearGUI()
 
-#Region Grupo reducción
+    ; Estilos de controles inputs:
+    Local Const $ES_INPUTFIJO    = 0x0801 ; = BitOr($ES_CENTER, $ES_READONLY)
+    Local Const $ES_INPUTENTRADA = 0x2001 ; = BitOr($ES_CENTER, $ES_NUMBER)
 
-GUICtrlCreateGroup('Reducción', 5, 0, 107, 67)
-; Fila 1
-$idInput_red_1 = GUICtrlCreateInput('',     11, 16, 45, 20, $ES_INPUTENTRADA)
-                 GUICtrlCreateInput('100%', 61, 16, 45, 20, $ES_INPUTFIJO)
-; Fila 2
-$idInput_red_2 = GUICtrlCreateInput('',     11, 41, 45, 20, $ES_INPUTENTRADA)
-$idInput_red_3 = GUICtrlCreateInput('',     61, 41, 45, 20, $ES_INPUTFIJO)
-GUICtrlCreateGroup('', -99, -99) ; => Grupo 'Reducción'
+    GUICreate('Imágenes', 205, 171)
+    GUISetFont(10, Default, Default, 'Liberation Mono')
 
-#EndRegion
-#Region Grupo tamaño imagen
+    $combo = GUICtrlCreateCombo('', 5, 5, 195, 23, 0x0003)
+    GUICtrlSetData(-1, $actual, $actual)
+    GUICtrlSetOnEvent($combo, _comboChanged)
 
-GUICtrlCreateGroup('Tamaño', 111, 0, 207, 126)
-; Fila 1
-GUICtrlCreateInput(@DesktopWidth,         117, 16, 45, 20, $ES_INPUTFIJO)
-GUICtrlCreateInput(@DesktopHeight,        167, 16, 45, 20, $ES_INPUTFIJO)
-GUICtrlCreateInput(Round($screenProp, 5), 217, 16, 95, 20, $ES_INPUTFIJO)
-; Fila 2
-$idInput_tam_1 = GUICtrlCreateInput('', 117, 41, 45, 20, $ES_INPUTENTRADA)
-$idInput_tam_2 = GUICtrlCreateInput('', 167, 41, 45, 20, $ES_INPUTENTRADA)
-$idInput_tam_3 = GUICtrlCreateInput('', 217, 41, 95, 20, $ES_INPUTFIJO)
-; Fila 3
-$idInput_tam_4 = GUICtrlCreateInput('', 117, 66, 45, 20, $ES_INPUTENTRADA)
-$idInput_tam_5 = GUICtrlCreateInput('', 167, 66, 45, 20, $ES_INPUTENTRADA)
-$idInput_tam_6 = GUICtrlCreateInput('', 217, 66, 45, 20, $ES_INPUTFIJO)
-$idInput_tam_7 = GUICtrlCreateInput('', 267, 66, 45, 20, $ES_INPUTFIJO)
-; Fila 4
-$idInput_tam_8 = GUICtrlCreateInput('', 117, 91, 45, 20, $ES_INPUTFIJO)
-$idInput_tam_9 = GUICtrlCreateInput('', 167, 91, 45, 20, $ES_INPUTFIJO)
-; Fila 5
-$idButton_tam_1 = GUICtrlCreateButton('', 117, 111, 45, 10)
-GUICtrlSetBkColor(-1, $COLOR_VERDE)
-$idButton_tam_2 = GUICtrlCreateButton('', 167, 111, 45, 10)
-GUICtrlSetBkColor(-1, $COLOR_VERDE)
+    $button1 = GUICtrlCreateButton('Agregar', 5, 147, 65, 20)
+    $button2 = GUICtrlCreateButton('Cerrar', 70, 147, 65, 20)
+    GUICtrlSetColor(-1, 0xFFFFFF)
+    GUICtrlSetBkColor(-1, 0xFF0000)
+    $button3 = GUICtrlCreateButton('Limpiar', 135, 147, 65, 20)
 
-GUICtrlCreateGroup('', -99, -99) ; => Grupo 'Tamaño'
+    ; Fila 1
+    GUICtrlCreateInput(@DesktopWidth,           5, 33, 45, 20, $ES_INPUTFIJO)
+    GUICtrlCreateInput(@DesktopHeight,         55, 33, 45, 20, $ES_INPUTFIJO)
+    GUICtrlCreateInput(Round($screenProp, 5), 105, 33, 95, 20, $ES_INPUTFIJO)
 
-#EndRegion
+    ; Fila 2
+    $input1 = GUICtrlCreateInput('',   5, 58, 45, 20, $ES_INPUTENTRADA)
+    $input2 = GUICtrlCreateInput('',  55, 58, 45, 20, $ES_INPUTENTRADA)
+    $input3 = GUICtrlCreateInput('', 105, 58, 95, 20, $ES_INPUTFIJO)
 
-GUICtrlSetOnEvent($idInput_tam_1, _idInput_tam_1Changed)
-GUICtrlSetOnEvent($idInput_tam_2, _idInput_tam_2Changed)
-GUICtrlSetOnEvent($idInput_tam_4, _idInput_tam_4Changed)
-GUICtrlSetOnEvent($idInput_tam_5, _idInput_tam_5Changed)
-GUICtrlSetOnEvent($idButton_tam_1, _idButton_tam_1Clicked)
-GUICtrlSetOnEvent($idButton_tam_2, _idButton_tam_2Clicked)
-GUICtrlSetOnEvent($idInput_red_1, _idInput_red_1Changed)
-GUICtrlSetOnEvent($idInput_red_2, _idInput_red_2Changed)
-GUISetOnEvent(-3, _GUI_EVENT_CLOSE)
+    ; Fila 3
+    $input4 = GUICtrlCreateInput('',   5, 83, 45, 20, $ES_INPUTENTRADA)
+    $input5 = GUICtrlCreateInput('',  55, 83, 45, 20, $ES_INPUTENTRADA)
+    $input6 = GUICtrlCreateInput('', 105, 83, 45, 20, $ES_INPUTFIJO)
+    $input7 = GUICtrlCreateInput('', 155, 83, 45, 20, $ES_INPUTFIJO)
 
-; El dummy permite que se pueda usar la tecla 'enter' para actualizar la
-; interfaz sin activar otro control.
-$idDummy = GUICtrlCreateDummy()
-Local $aAccelKeys = [ _
-    ['{enter}',  $idDummy], _
-    ['+{left}',  $idButton_tam_1], _
-    ['+{right}', $idButton_tam_2] _
-]
-GUISetAccelerators($aAccelKeys)
+    ; Fila 4
+    $input8 = GUICtrlCreateInput('',  5, 108, 45, 20, $ES_INPUTFIJO)
+    $input9 = GUICtrlCreateInput('', 55, 108, 45, 20, $ES_INPUTFIJO)
 
-GUISetState(@SW_SHOW)
-While 1 ; Idle loop
-    Sleep(100)
-WEnd
+    ; Fila 5
+    $button4 = GUICtrlCreateButton('',  5, 133, 45, 10)
+    GUICtrlSetBkColor(-1, 0x00FF00)
+    $button5 = GUICtrlCreateButton('', 55, 133, 45, 10)
+    GUICtrlSetBkColor(-1, 0x00FF00)
 
+    GUICtrlSetOnEvent($input1, _input1Changed)
+    GUICtrlSetOnEvent($input2, _input2Changed)
+    GUICtrlSetOnEvent($input4, _input4Changed)
+    GUICtrlSetOnEvent($input5, _input5Changed)
+    GUICtrlSetOnEvent($button1, _button1Clicked)
+    GUICtrlSetOnEvent($button2, _button2Clicked)
+    GUICtrlSetOnEvent($button3, _button3Clicked)
+    GUICtrlSetOnEvent($button4, _button4Clicked)
+    GUICtrlSetOnEvent($button5, _button5Clicked)
+
+    GUISetOnEvent(-3, _GUI_EVENT_CLOSE)
+
+    ; El dummy permite que se pueda usar la tecla 'enter' para actualizar la
+    ; interfaz sin activar otro control.
+    $dummy = GUICtrlCreateDummy()
+    Local $aAccelKeys = [ _
+        ['{enter}',  $dummy], _
+        ['+{left}',  $button4], _
+        ['+{right}', $button5] _
+    ]
+    GUISetAccelerators($aAccelKeys)
+EndFunc
 #EndRegion
 
-;Region Manejadores de Eventos
+#Region Manejadores de Eventos
+Func _button1Clicked() ; Agregar
+    $nuevo = InputBox('Imágenes', 'Nuevo nombre:', '', '', 1, 125)
+    If ($nuevo And _GUICtrlComboBox_FindString($combo, $nuevo) == -1) Then
+        GUICtrlSetData($combo, $nuevo, $nuevo)
 
+        ; Creo una entrada de caché vacía:
+        Local $datos_nuevos = [0, 0, 0, 0]
+        $cache($nuevo) = $datos_nuevos
+
+        _comboChanged()
+    EndIf
+EndFunc
+Func _button2Clicked() ; Cerrar
+    If (_GUICtrlComboBox_GetCount($combo) > 1) Then
+        $i = _GUICtrlComboBox_GetCurSel($combo)
+        _GUICtrlComboBox_DeleteString($combo, $i)
+        _GUICtrlComboBox_SetCurSel($combo, 0)
+        _comboChanged()
+    EndIf
+EndFunc
+Func _button3Clicked() ; Limpiar
+    $x = 0
+    $y = 0
+    $xImg = 0
+    $yImg = 0
+
+    ; Actualizo los controles:
+    _Update_input1()
+    _Update_input2()
+    _Update_input3()
+    _Update_input4()
+    _Update_input5()
+    _Update_input6()
+    _Update_input7()
+    _Update_input8()
+    _Update_input9()
+EndFunc
+Func _button4Clicked() ; Sumar Ancho
+    $x += $xImg
+    _Update_input1()
+    If ($yImg > $y) Then
+        $y = $yImg
+        _Update_input2()
+        _Update_input3()
+        _Update_input6()
+        _Update_input7()
+        _Update_input9()
+    EndIf
+EndFunc
+Func _button5Clicked() ; Sumar Altura
+    $y += $yImg
+    _Update_input2()
+    If ($xImg > $x) Then
+        $x = $xImg
+        _Update_input1()
+        _Update_input3()
+        _Update_input6()
+        _Update_input7()
+        _Update_input8()
+    EndIf
+EndFunc
+Func _comboChanged()
+    $nuevo = GUICtrlRead($combo)
+    If ($nuevo <> $actual) Then
+        ; Guardo los datos
+        If (_GUICtrlComboBox_FindString($combo, $actual) == -1) Then
+            ; Borro la entrada del caché si se borró la imágen:
+            $cache.Remove($actual)
+        Else
+            ; Guardo los valores actuales en el caché:
+            Local $datos_actuales = [$x, $y, $xImg, $yImg]
+            $cache($actual) = $datos_actuales
+        EndIf
+
+        ; Traigo los datos del caché:
+        $actual = $nuevo
+        $datos_nuevos = $cache($nuevo)
+        $x = $datos_nuevos[0]
+        $y = $datos_nuevos[1]
+        $xImg = $datos_nuevos[2]
+        $yImg = $datos_nuevos[3]
+
+        ; Actualizo los controles:
+        _Update_input1()
+        _Update_input2()
+        _Update_input3()
+        _Update_input4()
+        _Update_input5()
+        _Update_input6()
+        _Update_input7()
+        _Update_input8()
+        _Update_input9()
+    EndIf
+EndFunc
 Func _GUI_EVENT_CLOSE()
     GUIDelete()
     Exit
 EndFunc
-Func _idInput_red_1Changed()
-    _Update_idInput_red_3()
+Func _input1Changed()
+    $x = GUICtrlRead($input1)
+    _Update_input3()
+    _Update_input6()
+    _Update_input7()
+    _Update_input8()
 EndFunc
-Func _idInput_red_2Changed()
-    _Update_idInput_red_3()
+Func _input2Changed()
+    $y = GUICtrlRead($input2)
+    _Update_input3()
+    _Update_input6()
+    _Update_input7()
+    _Update_input9()
 EndFunc
-Func _idInput_tam_1Changed()
-    $x = Int(GUICtrlRead($idInput_tam_1))
-    _Update_idInput_tam_3()
-    _Update_idInput_tam_6()
-    _Update_idInput_tam_7()
-    _Update_idInput_tam_8()
+Func _input4Changed()
+    $xImg = GUICtrlRead($input4)
+    _Update_input6()
+    _Update_input7()
+    _Update_input8()
 EndFunc
-Func _idInput_tam_2Changed()
-    $y = Int(GUICtrlRead($idInput_tam_2))
-    _Update_idInput_tam_3()
-    _Update_idInput_tam_6()
-    _Update_idInput_tam_7()
-    _Update_idInput_tam_9()
+Func _input5Changed()
+    $yImg = GUICtrlRead($input5)
+    _Update_input6()
+    _Update_input7()
+    _Update_input9()
 EndFunc
-Func _idInput_tam_4Changed()
-    $xImg = Int(GUICtrlRead($idInput_tam_4))
-    _Update_idInput_tam_6()
-    _Update_idInput_tam_7()
-    _Update_idInput_tam_8()
+#EndRegion
+#Region Funciones Actualizaciones Input
+Func _Update_input1()
+    GUICtrlSetData($input1, $x ? $x : '')
+    _input1Changed()
 EndFunc
-Func _idInput_tam_5Changed()
-    $yImg = Int(GUICtrlRead($idInput_tam_5))
-    _Update_idInput_tam_6()
-    _Update_idInput_tam_7()
-    _Update_idInput_tam_9()
+Func _Update_input2()
+    GUICtrlSetData($input2, $y ? $y : '')
+    _input2Changed()
 EndFunc
-Func _idButton_tam_1Clicked()
-    $x += $xImg
-    _Update_idInput_tam_1()
-    If ($yImg > $y) Then
-        $y = $yImg
-        _Update_idInput_tam_2()
-        _Update_idInput_tam_3()
-        _Update_idInput_tam_6()
-        _Update_idInput_tam_7()
-        _Update_idInput_tam_9()
-    EndIf
+Func _Update_input3()
+    GUICtrlSetData($input3, $y ? Round($x / $y, 5) : '')
 EndFunc
-Func _idButton_tam_2Clicked()
-    $y += $yImg
-    _Update_idInput_tam_2()
-    If ($xImg > $x) Then
-        $x = $xImg
-        _Update_idInput_tam_1()
-        _Update_idInput_tam_3()
-        _Update_idInput_tam_6()
-        _Update_idInput_tam_7()
-        _Update_idInput_tam_8()
-    EndIf
+Func _Update_input4()
+    GUICtrlSetData($input4, $xImg ? $xImg : '')
 EndFunc
-
-;Region Funciones Actualizaciones Input
-
-Func _Update_idInput_red_3()
-    Local $viejo = Int(GUICtrlRead($idInput_red_1))
-    Local $nuevo = Int(GUICtrlRead($idInput_red_2))
-    If ($viejo > 0) Then
-        Local $porcentaje = Round(($nuevo * 100 / $viejo), 0)
-        GUICtrlSetData($idInput_red_3, $porcentaje & '%')
-
-        Local $bkColor = $COLOR_GRIS
-        Select
-            Case $porcentaje > 100
-                $bkColor = $COLOR_VERDE
-            Case $porcentaje < 100 And $porcentaje > 0
-                $bkColor = $COLOR_ROJO
-        EndSelect
-
-        GUICtrlSetBkColor($idInput_red_3, $bkColor)
-    Else
-        GUICtrlSetData($idInput_red_3, '')
-        GUICtrlSetBkColor($idInput_red_3, $COLOR_GRIS)
-    EndIf
+Func _Update_input5()
+    GUICtrlSetData($input5, $yImg ? $yImg : '')
 EndFunc
-Func _Update_idInput_tam_1()
-    GUICtrlSetData($idInput_tam_1, $x)
-    _idInput_tam_1Changed()
+Func _Update_input6()
+    $newProp1 = $y ? ($x + $xImg) / $y : 0
+    GUICtrlSetData($input6, $y ? Round($newProp1, 2) : '')
+    _Update_input_colors()
 EndFunc
-Func _Update_idInput_tam_2()
-    GUICtrlSetData($idInput_tam_2, $y)
-    _idInput_tam_2Changed()
+Func _Update_input7()
+    $newProp2 = $y ? $x / ($y + $yImg) : 0
+    GUICtrlSetData($input7, $y ? Round($newProp2, 2) : '')
+    _Update_input_colors()
 EndFunc
-Func _Update_idInput_tam_3()
-    GUICtrlSetData($idInput_tam_3, ($y == 0) ? "" : Round($x / $y, 5))
+Func _Update_input8()
+    GUICtrlSetData($input8, $x + $xImg)
 EndFunc
-Func _Update_idInput_tam_6()
-    $newProp1 = ($y == 0) ? 0 : (($x + $xImg) / $y)
-    GUICtrlSetData($idInput_tam_6, ($y == 0) ? "" : Round($newProp1, 2))
-    _Update_idInput_tam_Colors()
+Func _Update_input9()
+    GUICtrlSetData($input9, $y + $yImg)
 EndFunc
-Func _Update_idInput_tam_7()
-    $newProp2 = ($y == 0) ? 0  : ($x / ($y + $yImg))
-    GUICtrlSetData($idInput_tam_7, ($y == 0) ? "" : Round($newProp2, 2))
-    _Update_idInput_tam_Colors()
-EndFunc
-Func _Update_idInput_tam_8()
-    GUICtrlSetData($idInput_tam_8, ($x + $xImg))
-EndFunc
-Func _Update_idInput_tam_9()
-    GUICtrlSetData($idInput_tam_9, (($y == 0) ? "" : ($y + $yImg)))
-EndFunc
-Func _Update_idInput_tam_Colors()
-    If ($y == 0) Then
-        GUICtrlSetBkColor($idInput_tam_6, $COLOR_GRIS)
-        GUICtrlSetBkColor($idInput_tam_7, $COLOR_GRIS)
-    Else
+Func _Update_input_colors()
+    If ($y) Then
         Local $dif1 = Abs($newProp1 - $screenProp)
         Local $dif2 = Abs($newProp2 - $screenProp)
 
@@ -228,7 +280,18 @@ Func _Update_idInput_tam_Colors()
                 $bkColor_6 = $COLOR_VERDE
                 $bkColor_7 = $COLOR_VERDE
         EndSelect
-        GUICtrlSetBkColor($idInput_tam_6, $bkColor_6)
-        GUICtrlSetBkColor($idInput_tam_7, $bkColor_7)
+        GUICtrlSetBkColor($input6, $bkColor_6)
+        GUICtrlSetBkColor($input7, $bkColor_7)
+    Else
+        GUICtrlSetBkColor($input6, $COLOR_GRIS)
+        GUICtrlSetBkColor($input7, $COLOR_GRIS)
     EndIf
 EndFunc
+#EndRegion
+
+; Ejecución:
+_CrearGUI()
+GUISetState(@SW_SHOW)
+While 1 ; Idle loop
+    Sleep(100)
+WEnd

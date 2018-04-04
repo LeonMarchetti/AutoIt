@@ -1,6 +1,8 @@
 #Region Configuración
-#pragma compile(Icon, au3.ico)
+#pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
+Opt('ExpandEnvStrings', 1)
+Opt('ExpandVarStrings', 1)
 Opt("GUIOnEventMode", 1)
 #EndRegion
 
@@ -21,9 +23,8 @@ Func _idDummyActivated()
     GUICtrlSetData($idOutput, '')
 
     Local $sDir = GUICtrlRead($idDir)
-    If ($sDir == '') Then
+    If ($sDir == '') Then _
         $sDir = @ScriptDir
-    EndIf
     GUICtrlSetTip($idDir, $sDir)
 
     If (FileExists($sDir)) Then
@@ -32,29 +33,41 @@ Func _idDummyActivated()
 
         GUICtrlSetData($idOutput, 'Ejecutando...')
         ProcessWaitClose($pid)
-        GUICtrlSetData($idOutput, StdoutRead($pid))
+        $sOutput = StringAddCR(StdoutRead($pid))
+        If (StringInStr($sOutput, @CRLF)) Then
+            StringReplace($sOutput, @CRLF, @CRLF)
+            Local Const $iOutputCtrlSize = 15 * @extended
+            GUICtrlSetPos($idOutput, Default, Default, Default, $iOutputCtrlSize)
+            WinMove($hGUI, '', Default, Default, Default, $iOutputCtrlSize + 100)
+        EndIf
+        GUICtrlSetData($idOutput, $sOutput)
     Else
-        GUICtrlSetData($idOutput, 'El directorio [' & $sDir & '] no existe.')
+        GUICtrlSetData($idOutput, 'El directorio [$sDir$] no existe.')
     EndIf
 EndFunc
 #EndRegion
 
 #Region Interfaz gráfica
-GUICreate("Ejecución de comandos", 650, 154)
+$hGUI = GUICreate('Ejecución de comandos', 650, 154)
 GUISetFont(10, Default, Default, 'Liberation Mono')
 
 GUICtrlCreateLabel('Carpeta: ', 5, 5, 64, 17)
+GUICtrlSetResizing(-1, 32 + 128 + 512)
 $sDir = IniRead('CommandRun.ini', 'main', 'dir', '')
 $idDir = GUICtrlCreateInput($sDir, 74, 5, 571, 17)
+GUICtrlSetResizing(-1, 32 + 128 + 512)
 GUICtrlSetTip($idDir, $sDir)
 
 GUICtrlCreateLabel('Comando: ', 5, 27, 64, 17)
+GUICtrlSetResizing(-1, 32 + 128 + 512)
 $idCmd = GUICtrlCreateInput(IniRead('CommandRun.ini', 'main', 'cmd', ''), 74, 27, 571, 17)
+GUICtrlSetResizing(-1, 32 + 128 + 512)
 $idOutput = GUICtrlCreateEdit('', 5, 49, 640, 100, (0x0800 + 0x00200000))
+GUICtrlSetResizing(-1, 32)
 ; 0x0800:     $ES_READONLY
 ; 0x00200000: $WS_VSCROLL
-GUICtrlSetBkColor($idOutput, 0xF0F4F9)
-GUICtrlSetColor($idOutput, 0x000090)
+GUICtrlSetBkColor($idOutput, 0x000090)
+GUICtrlSetColor($idOutput, 0xF0F4F9)
 
 $idDummy = GUICtrlCreateDummy()
 Local $aAccelKeys[1][2] = [['{enter}', $idDummy]]

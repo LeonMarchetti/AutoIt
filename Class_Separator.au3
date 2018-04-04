@@ -1,5 +1,5 @@
 #Region Configuración
-#pragma compile(Icon, au3.ico)
+#pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
 Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)

@@ -1,9 +1,9 @@
 ; https://www.autoitscript.com/autoit3/docs/libfunctions/_WinAPI_GetSystemPowerStatus.htm
+#pragma compile(Icon, Icons\au3.ico)
+
 #include <Date.au3>
 #include <MsgBoxConstants.au3>
 #include <WinAPISys.au3>
-
-TraySetIcon("C:\Program Files\AutoIt\install\AutoIt3.exe", 0)
 
 Const $AC_OFF = 0
 Const $AC_ON = 1

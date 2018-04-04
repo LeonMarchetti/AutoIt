@@ -1,5 +1,5 @@
 #Region Configuración
-#pragma compile(Icon, au3.ico)
+#pragma compile(Icon, Icons/au3.ico)
 HotKeySet('^{p}',  _Main)      ; Ctrl+P
 HotKeySet('^+{p}', _ShowSizes) ; Ctrl+Shift+P
 HotKeySet('{ESC}', _Close)

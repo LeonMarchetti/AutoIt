@@ -4,7 +4,7 @@
     cualquier texto.
 #ce
 
-#pragma compile(Icon, au3.ico)
+#pragma compile(Icon, Icons/au3.ico)
 #include <GUIComboBox.au3>
 #include <GUIConstantsEx.au3>
 #include <TrayConstants.au3>
