@@ -1,6 +1,7 @@
 #Region Configuración
 #pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
+Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)
 #EndRegion
 
@@ -100,6 +101,12 @@ Func _CrearGUI()
         ['+{right}', $button5] _
     ]
     GUISetAccelerators($aAccelKeys)
+EndFunc
+ConsoleWrite('   $$x|   $$y|$$xImg|$$yImg|@LF@')
+ConsoleWrite('-----|-----|-----|-----|@LF@')
+Func _MostrarVariables($texto='')
+    ConsoleWrite(StringFormat('%5d|%5d|%5d|%5d', $x, $y, $xImg, $yImg) & _
+                 '| $texto$@LF@')
 EndFunc
 #EndRegion
 
@@ -203,27 +210,27 @@ Func _GUI_EVENT_CLOSE()
     Exit
 EndFunc
 Func _input1Changed()
-    $x = GUICtrlRead($input1)
+    $x = Int(GUICtrlRead($input1))
     _Update_input3()
     _Update_input6()
     _Update_input7()
     _Update_input8()
 EndFunc
 Func _input2Changed()
-    $y = GUICtrlRead($input2)
+    $y = Int(GUICtrlRead($input2))
     _Update_input3()
     _Update_input6()
     _Update_input7()
     _Update_input9()
 EndFunc
 Func _input4Changed()
-    $xImg = GUICtrlRead($input4)
+    $xImg = Int(GUICtrlRead($input4))
     _Update_input6()
     _Update_input7()
     _Update_input8()
 EndFunc
 Func _input5Changed()
-    $yImg = GUICtrlRead($input5)
+    $yImg = Int(GUICtrlRead($input5))
     _Update_input6()
     _Update_input7()
     _Update_input9()
