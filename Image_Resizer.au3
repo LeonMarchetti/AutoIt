@@ -1,7 +1,9 @@
-#Region ConfiguraciÛn
+#Region Configuraci√≥n
 #pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
+#include <Misc.au3>
+_Singleton('Im√°genes')
 #EndRegion
 
 #Region Includes
@@ -9,11 +11,11 @@ Opt('GUIOnEventMode', 1)
 #EndRegion
 
 #Region Variables globales
-Global $x, $y               ; Ancho y alto actuales de la im·gen a modificar.
-Global $xImg, $yImg         ; Ancho y alto de la im·gen a agregar.
-Global $newProp1, $newProp2 ; Proporciones luego de agregar la im·gen nueva.
+Global $x, $y               ; Ancho y alto actuales de la im√°gen a modificar.
+Global $xImg, $yImg         ; Ancho y alto de la im√°gen a agregar.
+Global $newProp1, $newProp2 ; Proporciones luego de agregar la im√°gen nueva.
 
-; ProporciÛn de la pantalla, se usa como proporciÛn de referencia para la im·gen
+; Proporci√≥n de la pantalla, se usa como proporci√≥n de referencia para la im√°gen
 Global Const $screenProp = @DesktopWidth / @DesktopHeight
 
 ; Colores:
@@ -29,7 +31,7 @@ Global $input1, $input2, $input3, $input4, $input5, $input6, $input7, _
 ; Combo:
 Global $actual = 'Original'
 
-; Objeto diccionario para guardar los valores para cada im·gen:
+; Objeto diccionario para guardar los valores para cada im√°gen:
 Global $cache = ObjCreate('Scripting.Dictionary')
 #EndRegion
 
@@ -40,7 +42,7 @@ Func _CrearGUI()
     Local Const $ES_INPUTFIJO    = 0x0801 ; = BitOr($ES_CENTER, $ES_READONLY)
     Local Const $ES_INPUTENTRADA = 0x2001 ; = BitOr($ES_CENTER, $ES_NUMBER)
 
-    GUICreate('Im·genes', 205, 171)
+    GUICreate('Im√°genes', 205, 171)
     GUISetFont(10, Default, Default, 'Liberation Mono')
 
     $combo = GUICtrlCreateCombo('', 5, 5, 195, 23, 0x0003)
@@ -105,11 +107,11 @@ EndFunc
 
 #Region Manejadores de Eventos
 Func _button1Clicked() ; Agregar
-    $nuevo = InputBox('Im·genes', 'Nuevo nombre:', '', '', 1, 125)
+    $nuevo = InputBox('Im√°genes', 'Nuevo nombre:', '', '', 1, 125)
     If ($nuevo And _GUICtrlComboBox_FindString($combo, $nuevo) == -1) Then
         GUICtrlSetData($combo, $nuevo, $nuevo)
 
-        ; Creo una entrada de cachÈ vacÌa:
+        ; Creo una entrada de cach√© vac√≠a:
         Local $datos_nuevos = [0, 0, 0, 0]
         $cache($nuevo) = $datos_nuevos
 
@@ -170,15 +172,15 @@ Func _comboChanged()
     If ($nuevo <> $actual) Then
         ; Guardo los datos
         If (_GUICtrlComboBox_FindString($combo, $actual) == -1) Then
-            ; Borro la entrada del cachÈ si se borrÛ la im·gen:
+            ; Borro la entrada del cach√© si se borr√≥ la im√°gen:
             $cache.Remove($actual)
         Else
-            ; Guardo los valores actuales en el cachÈ:
+            ; Guardo los valores actuales en el cach√©:
             Local $datos_actuales = [$x, $y, $xImg, $yImg]
             $cache($actual) = $datos_actuales
         EndIf
 
-        ; Traigo los datos del cachÈ:
+        ; Traigo los datos del cach√©:
         $actual = $nuevo
         $datos_nuevos = $cache($nuevo)
         $x = $datos_nuevos[0]
@@ -289,7 +291,7 @@ Func _Update_input_colors()
 EndFunc
 #EndRegion
 
-; EjecuciÛn:
+; Ejecuci√≥n:
 _CrearGUI()
 GUISetState(@SW_SHOW)
 While 1 ; Idle loop

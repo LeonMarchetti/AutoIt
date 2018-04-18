@@ -1,4 +1,4 @@
-#Region Configuracion
+#Region Configuraci√≥n
 #pragma compile(Out, Untitled.exe)
 #pragma compile(Icon, au3.ico)
 #NoTrayIcon
@@ -523,23 +523,29 @@ Func _Test_PrintLn()
     PrintLn(_StringRepeat('=', 80))
 EndFunc
 Func _Test_Run()
-    $iPID = Run('git status', 'C:\Users\LeoAM\Baul\AutoIt', @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
+    ; == Constantes ============================================================
+    ; Local Const $comando = 'git status'
+    Local Const $comando = 'ipconfig'
+    ; Local Const $directorio = 'C:\Users\LeoAM\Baul\AutoIt'
+    Local Const $directorio = 'C:\Users\LeoAM\'
+    ; Local Const $regex = 'Direcci.n IPv4.*: (.*)'
+    Local Const $regex = '^(\w.*)$|Direcci.n IPv4.*: (.*)'
+
+    ; ==========================================================================
+    $iPID = Run($comando, $directorio, @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
     ProcessWaitClose($iPid)
     $salida = StdoutRead($iPID)
     If (@error) Then
         ConsoleWrite('Error@LF@')
     Else
-        ConsoleWrite($salida)
-        ConsoleWrite('================================@LF@')
-        $regex = '(?m)^\t(?:modified:   )?(.+)$'
         $match = StringRegExp($salida, $regex)
         If (@error) Then
-            ConsoleWrite('PatrÛn mal escrito@LF@')
+            ConsoleWrite('Patr√≥n mal escrito@LF@')
         Else
             If ($match) Then
                 $matches = StringRegExp($salida, $regex, 3)
                 For $match In $matches
-                    ConsoleWrite('* $match$@LF@')
+                    ConsoleWrite('$match$@LF@')
                 Next
             Else
                 ConsoleWrite('No coincide@LF@')
@@ -648,5 +654,5 @@ Func _Test_Zero()
     EndIf
 EndFunc
 
-; EjecuciÛn
-_Test_PrintLn()
+; Ejecuci√≥n
+_Test_Run()

@@ -1,4 +1,4 @@
-#Region Configuración
+#Region ConfiguraciÃ³n
 #include <Array.au3>
 #include <GUIComboBox.au3>
 #include <GuiTab.au3>

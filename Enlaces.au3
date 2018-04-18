@@ -1,8 +1,10 @@
-#Region ConfiguraciÛn
+#Region Configuraci√≥n
 #pragma compile(Icon, Icons/au3.ico)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 Opt('WinTitleMatchMode', 2)
+#include <Misc.au3>
+_Singleton('Enlaces')
 #EndRegion
 
 #Region Variables globales
@@ -14,7 +16,7 @@ Global $asEnlaces[$iEnlaces]
 Global Const $sBrowserLaunch = IniRead('Enlaces.ini', 'main', 'BrowserLaunch', '')
 Global Const $sBrowserWindowName = IniRead('Enlaces.ini', 'main', 'BrowserWindowName', '')
 If ($sBrowserLaunch == '' Or $sBrowserWindowName == '') Then
-    MsgBox(0x10, 'Enlaces', 'Error: Par·metro no encontrado.')
+    MsgBox(0x10, 'Enlaces', 'Error: Par√°metro no encontrado.')
     Exit 1
 EndIf
 #EndRegion
@@ -41,7 +43,7 @@ Func _AccederEnlace($sEnlace)
         MouseClick('left', 260, 50, 1, 0)
         MouseMove($aPos[0], $aPos[1], 0)
 
-        ; Accede al enlace, copi·ndolo al portapapeles y peg·ndolo en la barra
+        ; Accede al enlace, copi√°ndolo al portapapeles y peg√°ndolo en la barra
         ; del navegador
         Local Const $sClipBefore = ClipGet()
         ClipPut($sEnlace)
@@ -49,22 +51,22 @@ Func _AccederEnlace($sEnlace)
         ClipPut($sClipBefore)
     Else
         ; Si no hay una ventana del navegador abierta se abre una, con
-        ; navegaciÛn privada.
+        ; navegaci√≥n privada.
         ShellExecute($sBrowserLaunch, '--private ' & $sEnlace)
     EndIf
 EndFunc
 #EndRegion
 
-#Region Interfaz gr·fica
+#Region Interfaz gr√°fica
 
 If ($iEnlaces == 0) Then
     ; Interfaz por si no se encuentra el archivo con los enlaces:
     GUICreate('Enlaces', 225, 35)
-    GUICtrlCreateLabel('No se encontrÛ ning˙n enlace...', 10, 10, 205, 15)
+    GUICtrlCreateLabel('No se encontr√≥ ning√∫n enlace...', 10, 10, 205, 15)
 Else
     GUICreate('Enlaces', 225, (20 + 15 * $iEnlaces))
     For $i = 0 To $iEnlaces - 1
-        #Region ExtracciÛn enlace
+        #Region Extracci√≥n enlace
         ; Puedo usar un nombre como etiqueta para el enlace:
         ; Etiqueta;https://www.sitio.com.ar
         $asStringSplit = StringSplit($asConfig[$i], ';')
