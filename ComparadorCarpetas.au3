@@ -1,8 +1,11 @@
-#Region Configuración
+#Region ConfiguraciÃ³n
 #pragma compile(Icon, Icons\au3.ico)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
+Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)
+#include <Misc.au3>
+_Singleton('ComparadorCarpetas')
 #EndRegion
 
 #Region Includes
@@ -83,7 +86,7 @@ Func _BorrarItemLista($idList)
     Local Const $iListItemIndex = _GUICtrlListBox_GetCurSel($idList)
     Local Const $sArchivo = _GUICtrlListBox_GetText($idList, $iListItemIndex)
     If (MsgBox($MB_YESNO, 'Comparador de Carpetas', _
-                '¿Quiere sacar a "' & $sArchivo & '" de la lista?') == $IDYES) Then
+                'Â¿Quiere sacar a "' & $sArchivo & '" de la lista?') == $IDYES) Then
         _GUICtrlListBox_DeleteString($idList, $iListItemIndex)
     EndIf
 EndFunc
@@ -135,14 +138,15 @@ Func _VaciarListas()
 EndFunc
 #EndRegion
 
-#Region Interfaz gráfica
+#Region Interfaz grÃ¡fica
 GUICreate('Comparador de Carpetas', 620, 93)
 GUISetFont(10, Default, Default, 'Liberation Mono')
 
 GUICtrlCreateLabel('Origen:', 5, 5, 64, 12)
-$idInput1 = GUICtrlCreateInput('', 5, 18, 205, 17)
+
+$idInput1 = GUICtrlCreateInput('C:%homepath%\Music\SD', 5, 18, 205, 17)
 GUICtrlCreateLabel('Destino:', 5, 35, 64, 12)
-$idInput2 = GUICtrlCreateInput('', 5, 48, 205, 17)
+$idInput2 = GUICtrlCreateInput('E:', 5, 48, 205, 17)
 $idBoton = GUICtrlCreateButton('Comparar', 5, 69, 205, 20)
 
 ; Panel lateral:

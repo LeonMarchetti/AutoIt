@@ -272,6 +272,15 @@ Func _Test_FileRead()
     PrintLn(FileRead($archivo))
     FileClose($archivo)
 EndFunc
+Func _Test_FileReadLine()
+    $archivo = FileOpen('ComparadorCarpetas.ini')
+    $iLinea = 1
+    Local $arreglo[2]
+    While True
+        _ArrayAdd($arreglo, FileReadLine($archivo, $iLinea))
+
+    WEnd
+EndFunc
 Func _Test__FileWriteToLine()
     $sArchivo = "Untitled.txt"
     #cs Local $asEntrada = [
@@ -511,6 +520,16 @@ Func _Test_PackVariables()
         PrintLn(ArregloToString($arreglo, ", "))
     EndIf
 EndFunc
+Func _Test_Pip()
+    $pid = Run('pip list --outdated', '', @SW_HIDE, $STDOUT_CHILD)
+    ProcessWaitClose($pid)
+    $salida = StringAddCR(StdoutRead($pid))
+    If (StringLen($salida) > 0) Then
+        ConsoleWrite('$salida$@LF@')
+    Else
+        MsgBox(64, 'PIP actualizaciones', 'Todo actualizado')
+    EndIf
+EndFunc
 Func _Test_PrintLn()
     ;Local Const $text = Hex(0x0800 + 0x00200000 + 0x00100000)
     ;Local Const $text = ChrW(0x250C)
@@ -655,4 +674,4 @@ Func _Test_Zero()
 EndFunc
 
 ; Ejecución
-_Test_Run()
+_Test_Pip()
