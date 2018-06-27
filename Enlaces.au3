@@ -1,5 +1,6 @@
 #Region Configuración
-#pragma compile(Icon, Icons/au3.ico)
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\Enlaces.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 Opt('WinTitleMatchMode', 2)
@@ -61,30 +62,34 @@ EndFunc
 
 If ($iEnlaces == 0) Then
     ; Interfaz por si no se encuentra el archivo con los enlaces:
-    GUICreate('Enlaces', 225, 35)
+    GUICreate('Enlaces', 310, 35)
+    GUISetFont(10, 0, 0, 'Liberation Mono')
     GUICtrlCreateLabel('No se encontró ningún enlace...', 10, 10, 205, 15)
 Else
-    GUICreate('Enlaces', 225, (20 + 15 * $iEnlaces))
+    GUICreate('Enlaces', 310, (20 + 15 * $iEnlaces))
+    GUISetFont(10, 0, 0, 'Liberation Mono')
     For $i = 0 To $iEnlaces - 1
         #Region Extracción enlace
         ; Puedo usar un nombre como etiqueta para el enlace:
         ; Etiqueta;https://www.sitio.com.ar
-        $asStringSplit = StringSplit($asConfig[$i], ';')
-        If ($asStringSplit[0] == 1) Then
-            $sLabel = $asStringSplit[1]
-            $sEnlace = $asStringSplit[1]
-        Else
-            $sLabel = $asStringSplit[1]
-            $sEnlace = $asStringSplit[2]
+        If ($asConfig[$i] <> '') Then
+            $asStringSplit = StringSplit($asConfig[$i], ';')
+            If ($asStringSplit[0] == 1) Then
+                $sLabel = $asStringSplit[1]
+                $sEnlace = $asStringSplit[1]
+            Else
+                $sLabel = $asStringSplit[1]
+                $sEnlace = $asStringSplit[2]
+            EndIf
+            #EndRegion
+
+            $idBoton = GUICtrlCreateButton('Ir', 10, (10 + 15 * $i), 20, 15)
+            GUICtrlCreateLabel($sLabel, 35, (10 + 15 * $i), 300, 15)
+            GUICtrlSetOnEvent($idBoton, _idBotonClicked)
+
+            $aidBotones[$i] = $idBoton
+            $asEnlaces[$i] = $sEnlace
         EndIf
-        #EndRegion
-
-        $idBoton = GUICtrlCreateButton('Ir', 10, (10 + 15 * $i), 20, 15)
-        GUICtrlCreateLabel($sLabel, 35, (10 + 15 * $i), 180, 15)
-        GUICtrlSetOnEvent($idBoton, _idBotonClicked)
-
-        $aidBotones[$i] = $idBoton
-        $asEnlaces[$i] = $sEnlace
      Next
      $asConfig = 0
 EndIf

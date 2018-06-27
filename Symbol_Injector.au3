@@ -1,10 +1,11 @@
 #cs Symbol Injector.au3
-    Presenta una lista de sÌmbolos que se pueden insertar usando un atajo del
+    Presenta una lista de s√≠mbolos que se pueden insertar usando un atajo del
     teclado ('ins' por defecto). Escribiendo sobre el combobox se puede insertar
     cualquier texto.
 #ce
 
-#pragma compile(Icon, Icons/au3.ico)
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\PegarS√≠mbolo.exe)
 #include <GUIComboBox.au3>
 #include <GUIConstantsEx.au3>
 #include <TrayConstants.au3>
@@ -13,20 +14,25 @@ Func Pegar()
     Send(GUICtrlRead($idCombo))
 EndFunc
 
-HotKeySet(IniRead("Symbol_Injector.ini", "main", "insert", "{ins}"), "Pegar")
-Opt("TrayIconHide", 1)
-Opt("TrayMenuMode", 1)
+HotKeySet(IniRead('Symbol_Injector.ini', 'main', 'insert', '{ins}'), 'Pegar')
+Opt('TrayIconHide', 1)
+Opt('TrayMenuMode', 1)
 
-Global $sListaSimbolos = IniReadSection("Symbol_Injector.ini", "sÌmbolos")
+Global $sListaSimbolos = IniReadSection('Symbol_Injector.ini', 's√≠mbolos')
+If @error Then
+    MsgBox(16, 'Pegar S√≠mbolo', 'No se pudo leer el archivo de configuraci√≥n')
+    Exit
+EndIf
+
 Global $bMinimizado = False
 
 ; Armar ventana ================================================================
-$hGUI = GuiCreate("Inyector de SÌmbolos", 245, 75)
+$hGUI = GuiCreate('Inyector de S√≠mbolos', 245, 75)
 GUISetFont(12)
-GUICtrlCreateLabel("Seleccionar sÌmbolo de la lista:", 10, 10, 225, 20)
-$idCombo = GUICtrlCreateCombo("", 10, 40, 225, 25)
+GUICtrlCreateLabel('Seleccionar s√≠mbolo de la lista:', 10, 10, 225, 20)
+$idCombo = GUICtrlCreateCombo('', 10, 40, 225, 25)
 
-For $i = 1 To $sListaSimbolos[0][0] ; Cantidad de sÌmbolos
+For $i = 1 To $sListaSimbolos[0][0] ; Cantidad de s√≠mbolos
     GUICtrlSetData($idCombo, $sListaSimbolos[$i][1])
 Next
 _GUICtrlComboBox_SetCurSel($idCombo, 0)
@@ -39,7 +45,7 @@ While True
         Switch TrayGetMsg()
             Case $TRAY_EVENT_PRIMARYDOWN
                 GuiSetState(@SW_SHOW, $hGUI)
-                Opt("TrayIconHide", 1)
+                Opt('TrayIconHide', 1)
                 $bMinimizado = False
         EndSwitch
     Else
@@ -48,8 +54,8 @@ While True
                 ExitLoop
             Case $GUI_EVENT_MINIMIZE
                 GUISetState(@SW_HIDE, $hGUI)
-                Opt("TrayIconHide", 0)
-                TraySetToolTip("Texto copiado es: " & GUICtrlRead($idCombo))
+                Opt('TrayIconHide', 0)
+                TraySetToolTip('Texto copiado es: ' & GUICtrlRead($idCombo))
                 $bMinimizado = True
         EndSwitch
     EndIf

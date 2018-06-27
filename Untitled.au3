@@ -1,7 +1,7 @@
 #Region Configuración
 #pragma compile(Out, Untitled.exe)
 #pragma compile(Icon, au3.ico)
-#NoTrayIcon
+; #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
 Opt('ExpandVarStrings', 1)
 #EndRegion
@@ -19,6 +19,7 @@ Opt('ExpandVarStrings', 1)
 #include <GuiEdit.au3>
 #include <GUIListBox.au3>
 #include <ListViewConstants.au3>
+#include <Misc.au3>
 #include <MsgBoxConstants.au3>
 #include <StaticConstants.au3>
 #include <String.au3>
@@ -31,6 +32,13 @@ Global Const $TITULO = "Untitled"
 Global Const $FALLA = 0
 Global Const $EXITO = 1
 #EndRegion
+#Region Globales
+$_Test_Autofire_Toggle = True
+#EndRegion
+
+Func _Close()
+    Exit
+EndFunc
 
 ; Funciones
 Func _Test_AlternarSalvapantallas()
@@ -134,6 +142,32 @@ Func _Test_Assert()
     Assert($n == 0, "", "Hola mundo")
     Assert($n == 1, "Mundo hola")
 EndFunc
+Func _Test_Autofire()
+    HotKeySet('{F1}', '_Test_Autofire_Toggle')
+    HotKeySet('{ESC}', '_Close')
+
+    ; While True
+        ; If $_Test_Autofire_Toggle Then
+            ; If (_IsPressed(02)) Then
+                ; MouseClick('left')
+            ; EndIf
+        ; Else
+            ; Sleep(100)
+        ; EndIf
+    ; WEnd
+
+    While 1
+        Sleep(100)
+        If _IsPressed(02) Then
+            Do
+                MouseClick('left')
+            Until not _IsPressed(02)
+        EndIf
+    WEnd
+EndFunc
+Func _Test_Autofire_Toggle()
+    $_Test_Autofire_Toggle = Not $_Test_Autofire_Toggle
+EndFunc
 Func _Test_ControlDoubleClick()
     $t = TimerInit()
     $i = 0
@@ -183,6 +217,47 @@ Func _Test_ControlDoubleClick()
                 EndIf
         EndSwitch
     WEnd
+EndFunc
+Func _Test_ControlSend()
+    ; ControlSetText ( WinWait ( "[CLASS:Chrome_WidgetWin_0]" ), '', 'Chrome_AutocompleteEditView1', 'http://www.google.fr/' )
+    #cs Sleep(2000)
+    If ControlSetText( _
+        WinWait ('[CLASS:Chrome_WidgetWin_1]'), _
+        'Chrome Legacy Window', _
+        'Chrome-AutocompleteEditView1', _
+        'www.taringa.net') Then
+
+        ConsoleWrite('Éxito!@LF@')
+    Else
+        ConsoleWrite('Falló@LF@')
+    EndIf
+    #ce
+    #cs Local $winWait = WinWait('[CLASS:Chrome_WidgetWin_0]')
+    If $winWait Then
+        ConsoleWrite('WinWait: "$winWait$"@LF@')
+        Local $winGetTitle = WinGetTitle($winWait)
+        If $winGetTitle Then
+            ConsoleWrite('Título: "$winGetTitle$"@LF@')
+        Else
+            ConsoleWrite('WinGetTitle falló@LF@')
+        EndIf
+    Else
+        ConsoleWrite('WinWait falló@LF@')
+    EndIf
+    #ce
+    If WinExists('[CLASS:Chrome_WidgetWin_1]') Then
+        ConsoleWrite('Ventana existe!@LF@')
+        ; Local $winWait = WinWait('[CLASS:Chrome_WidgetWin_1]')
+        ; Local $winWait = WinWait('', '- Opera')
+        ; Local $winHandle = WinGetHandle('', '- Opera')
+        Local $winHandle = WinGetHandle('[CLASS:Chrome_WidgetWin_1]')
+        ; WinActivate($winWait)
+        WinActivate($winHandle)
+        Local $winGetTitle = WinGetTitle($winHandle)
+        ConsoleWrite('Titulo: "$winGetTitle$"@LF@')
+    Else
+        ConsoleWrite('Ventana no existe!@LF@')
+    EndIf
 EndFunc
 Func _Test_DesktopMacros()
     ; Funciona en wine
@@ -416,25 +491,6 @@ Func _Test_IsType()
         ConsoleWrite('No s�@LF@')
     EndIf
 EndFunc
-Func _Test_LeerLineasArchivo()
-    $hGUI = GUICreate("AutoIt")
-    $asListaApps = LeerLineasArchivo("Apps.txt")
-    $iCantidadApps = UBound($asListaApps)
-    Local $aidBotones[$iCantidadApps]
-    Local $aaEventos[$iCantidadApps]
-
-    Local $sDrive, $sDir, $sFilename, $sExtension ; Para _PathSplit()
-    For $i = 0 To $iCantidadApps - 1
-        _PathSplit($asListaApps[$i], $sDrive, $sDir, $sFileName, $sExtension)
-        $idBoton = GUICtrlCreateButton($sFileName, 0, 25 * $i, 220, 25, $BS_LEFT)
-        GUICtrlSetFont($idBoton, 12)
-        If GUICtrlSetImage($idBoton, $asListaApps[$i], 0, 1) <> 1 Then PrintLn("Icon Error")
-        $aaEventos[$i] = CrearEventoGUI($idBoton, _Test_LeerLineasArchivo_idBotonClicked, $asListaApps[$i])
-        $aidBotones[$i] = $idBoton
-    Next
-
-    GUIRun($hGUI, $aaEventos)
-EndFunc
 Func _Test_LeerLineasArchivo_idBotonClicked($sFileName)
     ShellExecute($sFileName)
     PrintLn($sFileName)
@@ -507,25 +563,36 @@ Func _Test_ObjCreate()
     Next
 
 EndFunc
-Func _Test_PackVariables()
-    $var1 = "Hola"
-    $var2 = "Mundo"
-    $var3 = 4
-    $var4 = 5
-    $var5 = "Bleh"
-    $arreglo = PackVariables($var1, $var2, $var3, $var4, $var5)
-    If $arreglo == 0 Then
-        PrintLn("Arreglo es nulo")
-    Else
-        PrintLn(ArregloToString($arreglo, ", "))
-    EndIf
-EndFunc
 Func _Test_Pip()
-    $pid = Run('pip list --outdated', '', @SW_HIDE, $STDOUT_CHILD)
+    Const $comando = 'pip list --outdated'
+    Const $pid = Run($comando, '', @SW_HIDE, $STDOUT_CHILD)
     ProcessWaitClose($pid)
-    $salida = StringAddCR(StdoutRead($pid))
+    ; $salida = StringAddCR(StdoutRead($pid))
+    Const $salida = StdoutRead($pid)
+
+
+    ; $salida = "Package    Version   Latest    Type@LF@" & _
+    ; "---------- --------- --------- -----@LF@" & _
+    ; "certifi    2018.1.18 2018.4.16 wheel@LF@" & _
+    ; "setuptools 28.8.0    39.0.1    wheel"
+
+    $patron = "^\w*\b"
+
     If (StringLen($salida) > 0) Then
-        ConsoleWrite('$salida$@LF@')
+        ; ConsoleWrite('$salida$@LF@')
+        Const $lineas = StringSplit($salida, "@LF@")
+        Local $paquetes[0]
+        For $i = 3 To $lineas[0] - 1
+            $reg = StringRegExp($lineas[$i], $patron, 1)
+            If (Not @error) Then
+                $paquete = $reg[0]
+                ConsoleWrite($paquete & @LF)
+                _ArrayAdd($paquetes, $paquete)
+            Else
+                MsgBox(16, "PIP actualizaciones", "Error en la salida del comando")
+                Exit 1
+            EndIf
+        Next
     Else
         MsgBox(64, 'PIP actualizaciones', 'Todo actualizado')
     EndIf
@@ -610,33 +677,6 @@ Func _Test_StringRepeat()
     Local $sChar = '�'
     PrintLn(_StringRepeat('�', 80))
 EndFunc
-Func _Test_Tab()
-    $hGUI = GUICreate($TITULO, 300, 300)
-    GUISetFont(10, Default, Default, "Liberation Mono")
-    ;$idBoton = GUICtrlCreateButton("Agregar", 0, 0, 300, 20)
-    $idTab = GUICtrlCreateTab(0, 20, 300, 280)
-    $idBoton = GUICtrlCreateButton("Agregar", 0, 0, 300, 20)
-    GUICtrlCreateTabItem("Main Tab")
-    GUICtrlCreateTabItem("")
-
-    Local $aEventos = [ _
-        CrearEventoGUI($idBoton, _Test_Tab_idBotonClicked, $idTab) _
-    ]
-
-    GUIRun($hGUI, $aEventos)
-EndFunc
-Func _Test_Tab_Func()
-    $idBoton = GUICtrlCreateButton("Hola", 10, 50)
-    AgregarEventoGUI($idBoton, _Test_Tab_idBotonTabClicked)
-EndFunc
-Func _Test_Tab_idBotonClicked($idTab)
-    $i = Random(0, 100, 1)
-    $sTitulo = "Tab " & $i
-    AgregarTab($idTab, $sTitulo, _Test_Tab_Func)
-EndFunc
-Func _Test_Tab_idBotonTabClicked()
-    PrintLn("Hola mundo")
-EndFunc
 Func _Test_Timer()
     $aResult = Timer(_Test_Idle_Function)
     PrintLn("Resultado: " & $aResult[0])
@@ -674,4 +714,4 @@ Func _Test_Zero()
 EndFunc
 
 ; Ejecución
-_Test_Pip()
+_Test_Autofire()

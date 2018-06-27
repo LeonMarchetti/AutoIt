@@ -1,11 +1,12 @@
 ﻿# Ignorar ejecutables:
 *.exe
+ejecutables/
 
 # Archivos de configuración:
 AutoItWidget.ini
 
 # Carpetas:
-MVC/
+ShellExplorerTest/
 
 # Diagramas Dia:
 *.dia

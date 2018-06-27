@@ -1,5 +1,12 @@
-#pragma compile(Icon, Icons/Terminal.ico)
+#pragma compile(Icon, Icons\Terminal.ico)
+#pragma compile(Out, ejecutables\MiCMD.exe)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
-$dir = IniRead('MiCMD.ini', 'main', 'dir', '%homepath%')
+
+
+Global $default_dir = '%homepath%'
+$dir = IniRead('MiCMD.ini', 'main', 'dir', $default_dir)
+If $dir = $default_dir Then
+    MsgBox(64, 'Mi CMD', 'Se cargó el directorio por defecto')
+EndIf
 Run('cmd', $dir)

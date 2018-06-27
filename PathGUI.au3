@@ -1,5 +1,6 @@
-#Region ConfiguraciÛn
-#pragma compile(Icon, au3.ico)
+#Region Configuraci√≥n
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\PathGUI.exe)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
 Opt('GUIOnEventMode', 1)
@@ -30,7 +31,7 @@ Func _ArmarLista()
 EndFunc
 #EndRegion
 
-#Region Interfaz gr·fica
+#Region Interfaz gr√°fica
 GUICreate('Path', 500, 500)
 GUISetFont(10, Default, Default, 'Liberation Mono')
 

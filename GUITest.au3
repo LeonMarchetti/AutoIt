@@ -1,9 +1,11 @@
-#Region Configuración
+﻿#Region Configuración
 #include <Array.au3>
 #include <GUIComboBox.au3>
 #include <GuiTab.au3>
 #include 'Funciones.au3'
 #NoTrayIcon
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\GUITest.exe)
 Opt('ExpandEnvStrings', 1)
 Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)
@@ -13,7 +15,7 @@ Opt('GUIOnEventMode', 1)
 Global $controles[1][11]
 #EndRegion
 
-Global Const $MODULO = 10
+Global Const $MODULO = 11
 ; Global $idCombo_10
 ConsoleWrite('<GUITest Case $MODULO$>@LF@')
 
@@ -104,7 +106,7 @@ Case 3 ; Combo
     GUICtrlSetData($idCombo, $COMBO_TEXT[0], $COMBO_TEXT[0])
     GUICtrlSetData($idCombo, $COMBO_TEXT[1])
 
-Case 4 ; Bot�n
+Case 4 ; Botón
     #Region Button constants:
     $BTN_LEFT   = 0
     $BTN_HEIGHT = 18
@@ -417,9 +419,30 @@ Case 10 ; Combo (2)
     GUICtrlSetOnEvent($input4, _input_2Changed)
     GUICtrlSetOnEvent($input5, _input_2Changed)
 
+Case 11 ; Drag and drop
+    #Region Input constants:
+    $INPUT_HEIGHT = 20
+    $INPUT_LEFT = 5
+    $INPUT_WIDTH = 200
+    $INPUT_STYLE =
+    $INPUT_TOP = 5
+    #EndRegion
+    #Region GUI constants:
+    $GUI_FONT_ATTR   = 0
+    $GUI_FONT_NAME   = 'Liberation Mono'
+    $GUI_FONT_SIZE   = 10
+    $GUI_FONT_WEIGHT = 0
+    $GUI_HEIGHT      = $INPUT_HEIGHT + 10
+    $GUI_TITLE       = 'Untitled'
+    $GUI_WIDTH       = $INPUT_WIDTH
+    #EndRegion
+
+    GUICreate($GUI_TITLE, $GUI_WIDTH, $GUI_HEIGHT)
+    GUISetFont($GUI_FONT_SIZE, $GUI_FONT_WEIGHT, $GUI_FONT_ATTR, $GUI_FONT_NAME)
+
 EndSwitch
 
-#Region Ejecuci�n
+#Region Ejecución
 GUISetOnEvent(-3, _GUI_EVENT_CLOSE)
 GUISetState(@SW_SHOW)
 While 1

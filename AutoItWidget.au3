@@ -1,4 +1,4 @@
-#Region ConfiguraciÛn
+#Region Configuraci√≥n
 HotKeySet('#{a}', _MostrarPaneles)
 HotKeySet('#+{a}', _Reiniciar)
 Opt('ExpandEnvStrings', 1)
@@ -6,6 +6,7 @@ Opt('GUIOnEventMode', 1)
 Opt('TrayMenuMode', 1)
 Opt('TrayOnEventMode', 1)
 #pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\AutoItWidget.exe)
 #EndRegion
 
 #Region Includes
@@ -17,16 +18,16 @@ Opt('TrayOnEventMode', 1)
 #EndRegion
 
 #Region Variables globales
-Global Const $INI_ARCHIVO = 'AutoItWidget.ini' ; Archivo de configuraciÛn
+Global Const $INI_ARCHIVO = 'AutoItWidget.ini' ; Archivo de configuraci√≥n
 Global $hMainGUI                               ; Ventana 'padre' de los paneles
 Global $ahPaneles[0]                           ; Paneles
 Global $aBotones[0][2]                         ; Botones
-Global $iPanelActivado = 0                     ; Õndice del panel activado
+Global $iPanelActivado = 0                     ; √≠ndice del panel activado
 Global Enum $PANEL_ANT, $PANEL_SIG
 #EndRegion
 
 #Region Bandeja de notificaciones
-TraySetClick(8) ; El menu del Tray solo aparecer· cuando se use el click derecho.
+TraySetClick(8) ; El menu del Tray solo aparecer√° cuando se use el click derecho.
 TraySetOnEvent($TRAY_EVENT_PRIMARYDOWN, _MostrarPaneles)
 TrayItemSetOnEvent(TrayCreateItem('Mostrar siempre'), _TRAYITEM_MostrarSiempre)
 Global $hTrayMenu = TrayCreateMenu('Paneles')
@@ -81,16 +82,16 @@ Func _CrearPaneles()
     Local Const $TAM_FUENTE  = IniRead($INI_ARCHIVO, 'main', 'Font size', 10)
     Local Const $CANT_CONFIG = IniRead($INI_ARCHIVO, 'main', 'Config', 0)
 
-    ; Cargar los nombres de las secciones en el archivo de configuraciÛn:
+    ; Cargar los nombres de las secciones en el archivo de configuraci√≥n:
     Local $asSecciones = IniReadSectionNames($INI_ARCHIVO)
-    _ArrayDelete($asSecciones, '0-1') ; Descartar secciÛn 'main'
+    _ArrayDelete($asSecciones, '0-1') ; Descartar secci√≥n 'main'
 
     For $sSeccion In $asSecciones
         ; Leer botones del archivo, se sacan las lineas de config. del arreglo:
         $aSeccion = IniReadSection($INI_ARCHIVO, $sSeccion)
         $iBotones = _ArrayDelete($aSeccion, '0-' & $CANT_CONFIG)
 
-        ; PosiciÛn del panel:
+        ; Posici√≥n del panel:
         $X =        IniRead($INI_ARCHIVO, $sSeccion, 'X', -1)
         $Y =        IniRead($INI_ARCHIVO, $sSeccion, 'Y', -1)
         $bVisible = IniRead($INI_ARCHIVO, $sSeccion, 'Visible', 1)
@@ -121,7 +122,7 @@ Func _CrearPaneles()
             _OcultarPanel($sSeccion)
         EndIf
 
-        ; Ajustar tamaÒo de fuente para los botones del panel:
+        ; Ajustar tama√±o de fuente para los botones del panel:
         GUISetFont($TAM_FUENTE, Default, Default, 'Liberation Mono')
 
         For $i = 0 To $iBotones - 1
@@ -132,13 +133,13 @@ Func _CrearPaneles()
 
             $asStringSplit = StringSplit($aSeccion[$i][1], ';')
             Switch $asStringSplit[0]
-                Case 1 ; No fue provisto un Ìcono
+                Case 1 ; No fue provisto un √≠cono
                     GUICtrlSetImage($idBoton, $asStringSplit[1], 0, 1)
-                Case 2 ; Fue provisto un Ìcono
+                Case 2 ; Fue provisto un √≠cono
                     GUICtrlSetImage($idBoton, $asStringSplit[2], 0, 1)
             EndSwitch
 
-            ; Agregar tooltip al botÛn:
+            ; Agregar tooltip al bot√≥n
             GUICtrlSetTip($idBoton, $asStringSplit[1])
 
             Local $aBoton = [[ $idBoton, $asStringSplit[1] ]]
@@ -146,7 +147,7 @@ Func _CrearPaneles()
 
             GUICtrlSetOnEvent($idBoton, _idBotonClicked)
 
-            ; Agregar hotkey numÈrico al botÛn:
+            ; Agregar hotkey num√©rico al bot√≥n:
             If ($i <= 8) Then
                 Local $aBotonAccelKey = [[ $i+1, $idBoton ]]
                 _ArrayAdd($aAccelKeys, $aBotonAccelKey)
@@ -171,7 +172,7 @@ Func _MostrarPaneles()
 EndFunc
 Func _OcultarPanel($hPanel)
     ; Oculta el panel seleccionado. Puede recibir tanto su manejador como su
-    ; tÌtulo.
+    ; t√≠tulo.
     Local Const $sPanel = WinGetTitle($hPanel)
     GUISetState(@SW_HIDE, $hPanel)
     ; Crear un item en el menu de la bandeja para mostrar el panel nuevamente:
@@ -179,10 +180,10 @@ Func _OcultarPanel($hPanel)
     ; Incrementar contador de items en el menu de la bandeja:
     $iTrayMenuItems += 1
     If ($iTrayMenuItems == 1) Then
-        ; Se habilita el menu si empieza a tener Ìtems:
+        ; Se habilita el menu si empieza a tener √≠tems:
         TrayItemSetState($hTrayMenu, $TRAY_ENABLE)
     EndIf
-    ; Registrar en el archivo de configuraciÛn que un panel se ocultÛ:
+    ; Registrar en el archivo de configuraci√≥n que un panel se ocult√≥:
     IniWrite($INI_ARCHIVO, $sPanel, 'Visible', 'No')
 EndFunc
 #EndRegion

@@ -1,5 +1,6 @@
-#Region ConfiguraciÛn
-#pragma compile(Icon, Icons/au3.ico)
+#Region Configuraci√≥n
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\Alternador Salvapantallas.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 #EndRegion
@@ -29,8 +30,8 @@ EndFunc
 
 #Region Funciones
 Func AlternarSalvapantallas($encendido)
-    #cs Habilita o deshabilita el salvapantallas, seg˙n el valor booleano pasado
-        como par·metro.
+    #cs Habilita o deshabilita el salvapantallas, seg√∫n el valor booleano pasado
+        como par√°metro.
     #ce
     DllCall('user32.dll', 'long', 'SystemParametersInfo', _
         'long', 17, _
@@ -40,7 +41,7 @@ Func AlternarSalvapantallas($encendido)
 EndFunc
 #EndRegion
 
-#Region Interfaz gr·fica
+#Region Interfaz gr√°fica
 GUICreate('Alternador de Salvapantallas', 120, 40)
 GUISetFont(10, Default, Default, 'Liberation Mono')
 

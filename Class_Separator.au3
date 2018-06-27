@@ -1,5 +1,6 @@
-#Region ConfiguraciÛn
-#pragma compile(Icon, Icons/au3.ico)
+#Region Configuraci√≥n
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\SeparadorClasesC++.exe)
 #NoTrayIcon
 Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)
@@ -13,7 +14,7 @@ Opt('GUIOnEventMode', 1)
 #Region Variables globales
 Global $edit, $input
 
-; Constantes Interfaz Gr·fica:
+; Constantes Interfaz Gr√°fica:
 Global Const $CTRL_ANCHO = 655
 Global Const $CTRL_ALTO = 20
 #EndRegion
@@ -54,7 +55,7 @@ Func ArmarSeparador($clase)
 EndFunc
 #EndRegion
 
-#Region Interfaz gr·fica
+#Region Interfaz gr√°fica
 GUICreate('Separador de clase', ($CTRL_ANCHO + 10), ($CTRL_ALTO * 2 + 15))
 GUISetFont(10, Default, Default, 'Liberation Mono')
 

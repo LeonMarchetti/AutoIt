@@ -1,5 +1,6 @@
 ; https://www.autoitscript.com/autoit3/docs/libfunctions/_WinAPI_GetSystemPowerStatus.htm
 #pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\Battery Checker.exe)
 
 #include <Date.au3>
 #include <MsgBoxConstants.au3>
@@ -31,7 +32,7 @@ While True
                 MsgBox( _
                     $MSGBOX_FLAG, _
                     "Battery Checker", _
-                    "¡Conectar cargador!" & @LF _
+                    "Â¡Conectar cargador!" & @LF _
                         & "Tiempo de descarga: " & _
                             $minseg[0] & ' minutos, ' & _
                             $minseg[1] & 'segundos.')
@@ -46,7 +47,7 @@ While True
                 MsgBox( _
                     $MSGBOX_FLAG, _
                     "Battery Checker", _
-                    "¡Desconectar cargador!" & @LF _
+                    "Â¡Desconectar cargador!" & @LF _
                         & "Tiempo de carga: " & _
                             $minseg[0] & ' minutos, ' & _
                             $minseg[1] & 'segundos.')
@@ -59,8 +60,8 @@ While True
 WEnd
 
 Func CargarLimites()
-    ; Carga los niveles de carga mínima y máxima. Si no los encuentra, pone un
-    ; valor negativo por defecto. Un valor negativo en cualquiera de los límites
+    ; Carga los niveles de carga mÃ­nima y mÃ¡xima. Si no los encuentra, pone un
+    ; valor negativo por defecto. Un valor negativo en cualquiera de los lÃ­mites
     ; hace terminar el programa.
     $carga_min = Int(IniRead("Battery Checker.ini", "main", "min", -1))
     $carga_max = Int(IniRead("Battery Checker.ini", "main", "max", -1))
@@ -68,7 +69,7 @@ Func CargarLimites()
         MsgBox( _
             BitOR($MB_ICONERROR, $MB_OK), _
             "Battery Checker", _
-            "¡Error lectura de archivo de configuración!")
+            "Â¡Error lectura de archivo de configuraciÃ³n!")
         Exit
     EndIf
 EndFunc
@@ -78,8 +79,8 @@ Func ArrancarTemporizador()
 EndFunc
 
 Func CalcularTiempo()
-    ; Calcula la diferencia entre la última medida de tiempo y cuando se llama a
-    ; la función, actualiza la variable de tiempo y regresa la diferencia.
+    ; Calcula la diferencia entre la Ãºltima medida de tiempo y cuando se llama a
+    ; la funciÃ³n, actualiza la variable de tiempo y regresa la diferencia.
     $ahora = _NowCalc()
     $diferencia = _DateDiff('s', $t, $ahora)
     $t = $ahora
@@ -96,10 +97,10 @@ Func ConvertirSegMin($s)
 EndFunc
 
 Func ErrorBateria()
-    ; Muestra un mensaje si no se pudo medir la batería y termina el programa.
+    ; Muestra un mensaje si no se pudo medir la baterÃ­a y termina el programa.
     MsgBox( _
         BitOR($MB_ICONERROR, $MB_OK, $MB_TOPMOST), _
         "Battery Checker", _
-        "¡Error: Estado de batería desconocido!")
+        "Error: Â¡Estado de baterÃ­a desconocido!")
     Exit
 EndFunc

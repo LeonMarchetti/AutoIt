@@ -1,5 +1,6 @@
-#Region ConfiguraciÛn
-#pragma compile(Icon, Icons/au3.ico)
+#Region Configuraci√≥n
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\CambiarTama√±o.exe)
 HotKeySet('^{p}',  _Main)      ; Ctrl+P
 HotKeySet('^+{p}', _ShowSizes) ; Ctrl+Shift+P
 HotKeySet('{ESC}', _Close)
@@ -7,7 +8,7 @@ HotKeySet('{ESC}', _Close)
 
 #Region Variables globales
 Global $hWnd = 0
-GLobal Const $INI_FILE = 'CambiarTamaÒo.ini'
+GLobal Const $INI_FILE = 'CambiarTama√±o.ini'
 #EndRegion
 
 #Region Funciones

@@ -1,5 +1,6 @@
-#Region ConfiguraciÛn
-#pragma compile(Icon, au3.ico)
+#Region Configuraci√≥n
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\template.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 #EndRegion
@@ -23,7 +24,7 @@ EndFunc
 
 #EndRegion
 
-#Region Interfaz gr·fica
+#Region Interfaz gr√°fica
 GUICreate('GUICreate')
 GUISetFont(10, Default, Default, 'Liberation Mono')
 

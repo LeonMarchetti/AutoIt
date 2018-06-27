@@ -1,5 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\ComparadorCarpetas.exe)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
 Opt('ExpandVarStrings', 1)

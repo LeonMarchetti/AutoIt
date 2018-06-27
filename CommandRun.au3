@@ -1,5 +1,6 @@
-#Region ConfiguraciÛn
-#pragma compile(Icon, Icons/au3.ico)
+#Region Configuraci√≥n
+#pragma compile(Icon, Icons\au3.ico)
+#pragma compile(Out, ejecutables\EjecutarComando.exe)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
 Opt('ExpandVarStrings', 1)
@@ -47,8 +48,8 @@ Func _idDummyActivated()
 EndFunc
 #EndRegion
 
-#Region Interfaz gr·fica
-$hGUI = GUICreate('EjecuciÛn de comandos', 650, 154)
+#Region Interfaz gr√°fica
+$hGUI = GUICreate('Ejecuci√≥n de comandos', 650, 154)
 GUISetFont(10, Default, Default, 'Liberation Mono')
 
 GUICtrlCreateLabel('Carpeta: ', 5, 5, 64, 17)
