@@ -11,3 +11,6 @@ ShellExplorerTest/
 # Diagramas Dia:
 *.dia
 *.dia~
+
+# Ignorar scripts:
+Conexion.au3
