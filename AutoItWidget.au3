@@ -1,6 +1,7 @@
 #Region Configuración
 HotKeySet('#{a}', _MostrarPaneles)
 HotKeySet('#+{a}', _Reiniciar)
+HotKeySet('#{d}', _MostrarEscritorio)
 Opt('ExpandEnvStrings', 1)
 Opt('GUIOnEventMode', 1)
 Opt('TrayMenuMode', 1)
@@ -156,6 +157,11 @@ Func _CrearPaneles()
         GUISetAccelerators($aAccelKeys)
     Next
 EndFunc ; => CrearPaneles()
+Func _MostrarEscritorio()
+    ConsoleWrite('_MostrarEscritorio()' & @LF)
+    WinMinimizeAll()
+    WinActivate($ahPaneles[$iPanelActivado])
+EndFunc
 Func _MostrarPanel($hPanel)
     GUISetState(@SW_SHOW, $hPanel)
     TrayItemDelete(@TRAY_ID)

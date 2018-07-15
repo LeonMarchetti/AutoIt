@@ -482,6 +482,40 @@ Func _Test_Input_idInputChanged()
     PrintLn("_idInputChanged " & $i)
     $i+=1
 EndFunc
+Func _Test_Ipconfig()
+    ; == Constantes ============================================================
+    ; Local Const $comando = 'git status'
+    Local Const $comando = 'ipconfig'
+    ; Local Const $directorio = 'C:\Users\LeoAM\Baul\AutoIt'
+    Local Const $directorio = 'C:\Users\LeoAM\'
+    ; Local Const $regex = 'Direcci.n IPv4.*: (.*)'
+    Local Const $regex = '^(\w.*)$|Direcci.n IPv4.*: (.*)'
+
+    ; ==========================================================================
+    $iPID = Run($comando, $directorio, @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
+    ProcessWaitClose($iPid)
+    $salida = StdoutRead($iPID)
+    If (@error) Then
+        ConsoleWrite('Error@LF@')
+    Else
+        $match = StringRegExp($salida, $regex)
+        If (@error) Then
+            ConsoleWrite('Patrón mal escrito@LF@')
+        Else
+            If ($match) Then
+                $matches = StringRegExp($salida, $regex, 3)
+                For $match In $matches
+                    ConsoleWrite('$match$@LF@')
+                Next
+            Else
+                ConsoleWrite('No coincide@LF@')
+            EndIf
+        EndIf
+    EndIf
+
+    ;Run('cmd', '%baul%\github\Taller-sockets\tcp')
+    ;Run('cmd', '')
+EndFunc
 Func _Test_IsType()
     GUICreate($TITULO)
     $idInput = GUICtrlCreateInput('', 0, 0, 100, 20)
@@ -613,39 +647,22 @@ Func _Test_PrintLn()
     PrintLn('$str1$ $str2$')
     PrintLn(_StringRepeat('=', 80))
 EndFunc
+
+Func _ConsoleWrite($s)
+    ConsoleWrite(BinaryToString(StringToBinary($s, 4), 1))
+EndFunc
+
 Func _Test_Run()
-    ; == Constantes ============================================================
-    ; Local Const $comando = 'git status'
-    Local Const $comando = 'ipconfig'
-    ; Local Const $directorio = 'C:\Users\LeoAM\Baul\AutoIt'
+    ; Local Const $texto = 'áéíóú'
+    Local Const $texto = 'La conexión se completó correctamente'
+    Local Const $comando = 'echo $texto$'
+    ConsoleWrite('Comando: `$comando$`@LF@')
     Local Const $directorio = 'C:\Users\LeoAM\'
-    ; Local Const $regex = 'Direcci.n IPv4.*: (.*)'
-    Local Const $regex = '^(\w.*)$|Direcci.n IPv4.*: (.*)'
-
-    ; ==========================================================================
-    $iPID = Run($comando, $directorio, @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
-    ProcessWaitClose($iPid)
-    $salida = StdoutRead($iPID)
-    If (@error) Then
-        ConsoleWrite('Error@LF@')
-    Else
-        $match = StringRegExp($salida, $regex)
-        If (@error) Then
-            ConsoleWrite('Patrón mal escrito@LF@')
-        Else
-            If ($match) Then
-                $matches = StringRegExp($salida, $regex, 3)
-                For $match In $matches
-                    ConsoleWrite('$match$@LF@')
-                Next
-            Else
-                ConsoleWrite('No coincide@LF@')
-            EndIf
-        EndIf
-    EndIf
-
-    ;Run('cmd', '%baul%\github\Taller-sockets\tcp')
-    ;Run('cmd', '')
+    Local Const $pid = Run($comando, $directorio, @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
+    ProcessWaitClose($pid)
+    Local Const $salida = StdoutRead($pid)
+    ConsoleWrite('$salida$@LF@')
+    MsgBox(16, 'Untitled', $texto, 3)
 EndFunc
 Func _Test_ScriptLineNumber($n=@ScriptLineNumber)
     PrintLn("Linea: " & $n)
@@ -718,86 +735,5 @@ Func _Test_Zero()
     EndIf
 EndFunc
 
-Func Asc2Unicode($AscString)
-    Local $BufferSize = StringLen($AscString) * 2
-    Local $Buffer = DllStructCreate("byte[" & $BufferSize & "]")
-    Local $Return = DllCall("Kernel32.dll", "int", "MultiByteToWideChar", _
-        "int", 0, _
-        "int", 0, _
-        "str", $AscString, _
-        "int", StringLen($AscString), _
-        "ptr", DllStructGetPtr($Buffer), _
-        "int", $BufferSize)
-    Local $UnicodeString = StringLeft(DllStructGetData($Buffer, 1), $Return[0] * 2)
-    $Buffer = 0
-    Return $UnicodeString
-EndFunc
-
-Func Unicode2Asc($UniString)
-    If Not IsBinaryString($UniString) Then
-        SetError(1)
-        Return $UniString
-    EndIf
-
-    Local $BufferLen = StringLen($UniString)
-    Local $Input = DllStructCreate("byte[" & $BufferLen & "]")
-    Local $Output = DllStructCreate("char[" & $BufferLen & "]")
-    DllStructSetData($Input, 1, $UniString)
-    Local $Return = DllCall("kernel32.dll", "int", "WideCharToMultiByte", _
-        "int", 0, _
-        "int", 0, _
-        "ptr", DllStructGetPtr($Input), _
-        "int", $BufferLen / 2, _
-        "ptr", DllStructGetPtr($Output), _
-        "int", $BufferLen, _
-        "int", 0, _
-        "int", 0)
-    Local $AscString = DllStructGetData($Output, 1)
-    $Output = 0
-    $Input = 0
-    Return $AscString
-EndFunc
-
-Func Unicode2Utf8($UniString)
-    If Not IsBinaryString($UniString) Then
-        SetError(1)
-        Return $UniString
-    EndIf
-
-    Local $UniStringLen = StringLen($UniString)
-    Local $BufferLen = $UniStringLen * 2
-    Local $Input = DllStructCreate("byte[" & $BufferLen & "]")
-    Local $Output = DllStructCreate("char[" & $BufferLen & "]")
-    DllStructSetData($Input, 1, $UniString)
-    Local $Return = DllCall("kernel32.dll", "int", "WideCharToMultiByte", _
-        "int", 65001, _
-        "int", 0, _
-        "ptr", DllStructGetPtr($Input), _
-        "int", $UniStringLen / 2, _
-        "ptr", DllStructGetPtr($Output), _
-        "int", $BufferLen, _
-        "int", 0, _
-        "int", 0)
-    Local $Utf8String = DllStructGetData($Output, 1)
-    $Output = 0
-    $Input = 0
-    Return $Utf8String
-EndFunc
-
-Func Utf82Unicode($Utf8String)
-    Local $BufferSize = StringLen($Utf8String) * 2
-    Local $Buffer = DllStructCreate("byte[" & $BufferSize & "]")
-    Local $Return = DllCall("Kernel32.dll", "int", "MultiByteToWideChar", _
-        "int", 65001, _
-        "int", 0, _
-        "str", $Utf8String, _
-        "int", StringLen($Utf8String), _
-        "ptr", DllStructGetPtr($Buffer), _
-        "int", $BufferSize)
-    Local $UnicodeString = StringLeft(DllStructGetData($Buffer, 1), $Return[0] * 2)
-    $Buffer = 0
-    Return $UnicodeString
-EndFunc
-
 ; Ejecución
-_Test_MsgBox()
+_Test_Run()
