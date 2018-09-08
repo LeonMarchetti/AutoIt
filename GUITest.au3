@@ -5,7 +5,7 @@
 #include 'Funciones.au3'
 #NoTrayIcon
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\GUITest.exe)
+#pragma compile(Out, GUITest.exe)
 Opt('ExpandEnvStrings', 1)
 Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)

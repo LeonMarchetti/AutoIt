@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\Enlaces.exe)
+#pragma compile(Out, Enlaces.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 Opt('WinTitleMatchMode', 2)

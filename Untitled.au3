@@ -636,6 +636,40 @@ Func _Test_Pip()
         MsgBox(64, 'PIP actualizaciones', 'Todo actualizado')
     EndIf
 EndFunc
+Func _Test_PipFreeze()
+    Local Const $salida_freeze = Ejecutar('pip freeze')
+
+    Local $paquetes[0]
+
+    If StringLen($salida_freeze) > 0 Then
+        Const $lineas_freeze = StringSplit($salida_freeze, @LF)
+        Local $paquetes[0]
+        For $i = 1 To $lineas_freeze[0] - 1
+            $linea = $lineas_freeze[$i]
+            $reg = StringRegExp($linea, '(.*)==.*', 1)
+            If Not @error Then
+                _ArrayAdd($paquetes, $reg[0])
+            Else
+                ConsoleWrite('Error: "$linea$"@LF@')
+            EndIf
+        Next
+
+        ; Return $paquetes
+    Else
+        ConsoleWrite('Salida vacía de $freeze$@LF@')
+    EndIf
+
+    Local Const $regex = 'Required-by: (.*)'
+    For $paquete In $paquetes
+        ConsoleWrite('$paquete$@LF@')
+        $salida_show = Ejecutar('pip show $paquete$')
+        $match = StringRegExp($salida_show, $regex, 2)
+        ConsoleWrite('<' + $match[0] + '>@LF@')
+
+        ; ConsoleWrite('@TAB@$salida_show$@LF@')
+    Next
+
+EndFunc
 Func _Test_PrintLn()
     ;Local Const $text = Hex(0x0800 + 0x00200000 + 0x00100000)
     ;Local Const $text = ChrW(0x250C)
@@ -647,11 +681,27 @@ Func _Test_PrintLn()
     PrintLn('$str1$ $str2$')
     PrintLn(_StringRepeat('=', 80))
 EndFunc
-
 Func _ConsoleWrite($s)
     ConsoleWrite(BinaryToString(StringToBinary($s, 4), 1))
 EndFunc
+Func _Test_Regex()
+    Local Const $paquete = 'atomicwrites'
+    Local Const $comando = 'pip show $paquete$'
+    Local Const $regex = 'Required-by: (.*)'
+    Local Const $salida = Ejecutar($comando)
 
+    Local $match = StringRegExp($salida, $regex, 1)
+    If @error Then
+        ConsoleWrite('Error: <@error@>@LF@')
+    Else
+        For $e in $match
+            ConsoleWrite('< $e$@LF@')
+        Next
+    EndIf
+
+    ; ConsoleWrite('$salida$@LF@')
+
+EndFunc
 Func _Test_Run()
     ; Local Const $texto = 'áéíóú'
     Local Const $texto = 'La conexión se completó correctamente'
@@ -736,4 +786,4 @@ Func _Test_Zero()
 EndFunc
 
 ; Ejecución
-_Test_Run()
+_Test_PipFreeze()

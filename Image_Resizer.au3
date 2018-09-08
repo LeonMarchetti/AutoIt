@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\Imágenes.exe)
+#pragma compile(Out, Imágenes.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 #include <Misc.au3>

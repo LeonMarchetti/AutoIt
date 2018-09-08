@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\CambiarTamaño.exe)
+#pragma compile(Out, CambiarTamaño.exe)
 HotKeySet('^{p}',  _Main)      ; Ctrl+P
 HotKeySet('^+{p}', _ShowSizes) ; Ctrl+Shift+P
 HotKeySet('{ESC}', _Close)

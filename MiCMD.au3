@@ -1,5 +1,5 @@
 #pragma compile(Icon, Icons\Terminal.ico)
-#pragma compile(Out, ejecutables\MiCMD.exe)
+#pragma compile(Out, MiCMD.exe)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
 

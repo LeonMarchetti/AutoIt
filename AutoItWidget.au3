@@ -7,7 +7,7 @@ Opt('GUIOnEventMode', 1)
 Opt('TrayMenuMode', 1)
 Opt('TrayOnEventMode', 1)
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\AutoItWidget.exe)
+#pragma compile(Out, AutoItWidget.exe)
 #EndRegion
 
 #Region Includes
@@ -208,7 +208,7 @@ EndFunc
 Func _idBotonClicked()
     For $i = 0 To (UBound($aBotones) - 1)
         If (@GUI_CtrlId == $aBotones[$i][0]) Then
-            ShellExecute($aBotones[$i][1])
+            ShellExecute($aBotones[$i][1], '', '%baul%')
             ExitLoop
         EndIf
     Next

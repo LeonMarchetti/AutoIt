@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\Alternador Salvapantallas.exe)
+#pragma compile(Out, Alternador Salvapantallas.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 #EndRegion

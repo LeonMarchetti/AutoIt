@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\SeparadorClasesC++.exe)
+#pragma compile(Out, SeparadorClasesC++.exe)
 #NoTrayIcon
 Opt('ExpandVarStrings', 1)
 Opt('GUIOnEventMode', 1)

@@ -1,6 +1,6 @@
 ; https://www.autoitscript.com/autoit3/docs/libfunctions/_WinAPI_GetSystemPowerStatus.htm
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\Battery Checker.exe)
+#pragma compile(Out, Battery Checker.exe)
 
 #include <Date.au3>
 #include <MsgBoxConstants.au3>

@@ -1,5 +1,6 @@
 #Region Includes
 #include-once
+#include <AutoItConstants.au3>
 #include <GUIConstantsEx.au3>
 #EndRegion
 #Region Constantes
@@ -15,13 +16,13 @@ Func MostrarCartel($sTitulo, $sTexto)
     MsgBox(0, $sTitulo, $sTexto)
 EndFunc
 Func TrayAlternarVisibilidad($hGUI)
-    ; Función para ocultar una ventana y mostrar un ícono en la bandeja de
-    ; notificaciones, tal que se pueda recuperar la ventana desde allí.
+    ; FunciÃ³n para ocultar una ventana y mostrar un Ã­cono en la bandeja de
+    ; notificaciones, tal que se pueda recuperar la ventana desde allÃ­.
     ; # Para ocultar la ventana al minizarla:
     ; Switch GUIGetMsg()
     ;     Case $GUI_EVENT_MINIMIZE
     ;         TrayAlternarVisibilidad($mainGUI)
-    ; # Para volver a mostrar la ventana al presionar el ícono de la bandeja:
+    ; # Para volver a mostrar la ventana al presionar el Ã­cono de la bandeja:
     ; Switch TrayGetMsg()
     ;     Case $TRAY_PRIMARYDOWN
     ;         TrayAlternarVisibilidad($mainGUI)
@@ -34,8 +35,8 @@ Func TrayAlternarVisibilidad($hGUI)
     EndIf
 EndFunc
 Func AlternarSalvapantallas($bEncendido)
-    #cs Habilita o deshabilita el salvapantallas, según el valor booleano pasado
-        como parámetro.
+    #cs Habilita o deshabilita el salvapantallas, segÃºn el valor booleano pasado
+        como parÃ¡metro.
     #ce
     DllCall("user32.dll", "long", "SystemParametersInfo", _
         "long", 17, _
@@ -44,8 +45,8 @@ Func AlternarSalvapantallas($bEncendido)
         "long", 0)
 EndFunc
 Func Timer($oFunc)
-    #cs Ejecuta una función y regresa un arreglo con el tiempo que tardó y el
-        resultado de la función.
+    #cs Ejecuta una funciÃ³n regresa un arreglo con el tiempo que tardÃ³ y el
+        resultado de la funciÃ³n.
     #ce
     $hTimer = TimerInit()
     Local Const $aResult = [ $oFunc(), TimerDiff($hTimer) ]
@@ -55,19 +56,26 @@ Func Assert($bExpresion, _
             $sMensajeError="", _
             $sMensajeExito="", _
             $nLinea=@ScriptLineNumber)
-    #cs Aserción sobre una expresión, en el caso de que no se cumpla termina el
-        programa. Muestra un mensaje con el número de línea.
+    #cs AserciÃ³n sobre una expresiÃ³n, en el caso de que no se cumpla termina el
+        programa. Muestra un mensaje con el nÃºmero de lÃ­nea.
     #ce
     If (Not $bExpresion) Then
-        ConsoleWrite("Assert falló[" & $nLinea & "]: " & $sMensajeError & @LF)
+        ConsoleWrite("Assert fallÃ³[" & $nLinea & "]: " & $sMensajeError & @LF)
         Exit 1
     EndIf
 
     If ($sMensajeExito) Then _
-        ConsoleWrite("Assert pasó [" & $nLinea & "]: " & $sMensajeExito & @LF)
+        ConsoleWrite("Assert pasÃ³ [" & $nLinea & "]: " & $sMensajeExito & @LF)
 
     Return $bExpresion
 EndFunc
 Func DebugLog($sMensaje, $nLinea=@ScriptLineNumber)
     ConsoleWrite('Debug Msg   [' & $nLinea & ']: ' & $sMensaje & @LF)
+EndFunc
+Func Ejecutar($comando, $verbose=False)
+    If $verbose Then ConsoleWrite('Ejecutando: "' + $comando + '" ...' + @LF)
+    Local Const $pid = Run($comando, '', @SW_HIDE, $STDOUT_CHILD + $STDERR_CHILD)
+    ProcessWaitClose($pid)
+    If $verbose Then ConsoleWrite('Terminado' + @LF)
+    Return StdoutRead($pid)
 EndFunc

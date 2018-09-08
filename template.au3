@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\template.exe)
+#pragma compile(Out, template.exe)
 #NoTrayIcon
 Opt('GUIOnEventMode', 1)
 #EndRegion

@@ -5,7 +5,7 @@
 #ce
 
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\PegarSímbolo.exe)
+#pragma compile(Out, PegarSímbolo.exe)
 #include <GUIComboBox.au3>
 #include <GUIConstantsEx.au3>
 #include <TrayConstants.au3>

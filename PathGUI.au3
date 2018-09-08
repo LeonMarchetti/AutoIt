@@ -1,6 +1,6 @@
 #Region Configuración
 #pragma compile(Icon, Icons\au3.ico)
-#pragma compile(Out, ejecutables\PathGUI.exe)
+#pragma compile(Out, PathGUI.exe)
 #NoTrayIcon
 Opt('ExpandEnvStrings', 1)
 Opt('GUIOnEventMode', 1)
